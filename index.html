@@ -202,42 +202,37 @@
         .splash-content i { font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.6; transform: scale(1); } }
         
-        /* Botão de ativação de áudio - estilo discreto */
+        /* Botão de ativação de áudio - estilo original (grande, centralizado, pulsante) */
         #tap-to-start {
             position: fixed;
-            bottom: 20px;
+            bottom: 30%;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(8px);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 6px 12px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: normal;
-            cursor: pointer;
+            background: linear-gradient(135deg, #ff6600, #ff3300);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
             z-index: 10000;
+            cursor: pointer;
             display: none;
+            animation: btnPulse 1.5s infinite;
             white-space: nowrap;
             pointer-events: auto;
-            transition: all 0.2s;
-            box-shadow: none;
-            animation: none;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border: none;
         }
-        #tap-to-start:hover {
-            background: var(--primary-color);
-            color: #000;
-            border-color: var(--primary-color);
-        }
-        #tap-to-start:active {
-            transform: translateX(-50%) scale(0.95);
+        @keyframes btnPulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+            100% { transform: translateX(-50%) scale(1); }
         }
     </style>
 </head>
 <body class="theme-red">
     <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>MUTV Playlist</h1><p>Clique no botão para ativar áudio</p></div></div>
-    <div id="tap-to-start"><i class="fas fa-play-circle"></i> Ativar áudio</div>
+    <div id="tap-to-start"><i class="fas fa-play-circle"></i> 🎵 ATIVAR ÁUDIO (Toca com tela bloqueada)</div>
     
     <div class="app">
         <div class="fullscreen-video-container">
@@ -253,7 +248,7 @@
         </div>
         <div class="controls-overlay">
             <div class="bottom-controls" id="bottomControls">
-                <div class="track-info"><p id="trackArtist">🎵 Clique em "Ativar áudio"</p></div>
+                <div class="track-info"><p id="trackArtist">🎵 Clique em "ATIVAR ÁUDIO"</p></div>
                 <div class="progress-area">
                     <div class="progress-time"><span id="currentTime">0:00</span><span id="totalTime">0:00</span></div>
                     <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
@@ -483,7 +478,7 @@
         function startTimer() { stopTimer(); timerInterval = setInterval(() => { if (isPlaying && !isAdPlaying && musicPlayer.duration && !musicPlayer.paused) { progressFill.style.width = (musicPlayer.currentTime/musicPlayer.duration)*100+'%'; currentTimeEl.textContent = formatTime(musicPlayer.currentTime); } }, 200); }
         
         async function playMusic() {
-            if (!audioActive) { showNotification('⚠️ Clique no botão "Ativar áudio" primeiro!', 3000); return false; }
+            if (!audioActive) { showNotification('⚠️ Clique no botão "ATIVAR ÁUDIO" primeiro!', 3000); return false; }
             if (isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return false; }
             const track = musicas[currentIndex];
             if (!track || !track.src) return false;
@@ -560,7 +555,7 @@
         
         // ==================== EVENT LISTENERS ====================
         document.getElementById('progressBar').addEventListener('click', (e) => { if(isAdPlaying) return; const rect = e.currentTarget.getBoundingClientRect(); const percent = (e.clientX - rect.left) / rect.width; if(musicPlayer.duration) musicPlayer.currentTime = percent * musicPlayer.duration; resetHideTimer(); });
-        playBtn.addEventListener('click', () => { if(!audioActive) showNotification('⚠️ Clique no botão "Ativar áudio" primeiro!'); else togglePlayPause(); resetHideTimer(); });
+        playBtn.addEventListener('click', () => { if(!audioActive) showNotification('⚠️ Clique no botão "ATIVAR ÁUDIO" primeiro!'); else togglePlayPause(); resetHideTimer(); });
         prevBtn.addEventListener('click', () => { prevTrack(); resetHideTimer(); });
         nextBtn.addEventListener('click', () => { nextTrack(); resetHideTimer(); });
         shuffleBtn.addEventListener('click', () => { shuffle = !shuffle; showNotification(shuffle ? '🔀 Aleatório ON' : '➡️ Sequencial'); resetHideTimer(); });
