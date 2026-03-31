@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MUTV Playlist • Toca em Segundo Plano</title>
+    <title>MUTV Playlist • Toca com tela bloqueada</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -33,7 +33,7 @@
         @keyframes ticker-scroll-top { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
         
         .top-bar { position: absolute; top: 50px; right: 12px; display: flex; flex-direction: column; gap: 10px; z-index: 20; pointer-events: auto; }
-        .top-btn { background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); color: white; border: 1px solid rgba(255,255,255,0.2); font-size: 1.4rem; cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .top-btn { background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); color: white; border: 1px solid rgba(255,255,255,0.2); font-size: 1.4rem; cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); transition: 0.1s; }
         .top-btn:active { transform: scale(0.9); background: var(--primary-color); }
         
         .cta-button { position: absolute; bottom: 25%; right: 15px; background: linear-gradient(135deg, #ff6600, #ff3300); color: white; border: none; border-radius: 50px; padding: 8px 16px; font-size: 0.8rem; font-weight: bold; cursor: pointer; z-index: 25; box-shadow: 0 4px 15px rgba(0,0,0,0.4); animation: pulse-cta 1.5s infinite; display: flex; align-items: center; gap: 6px; pointer-events: auto; }
@@ -47,7 +47,7 @@
         .progress-bar { height: 3px; background: rgba(255,255,255,0.3); cursor: pointer; border-radius: 3px; }
         .progress-fill { height: 100%; background: var(--primary-color); width: 0%; border-radius: 3px; box-shadow: 0 0 5px var(--primary-color); }
         .controls { display: flex; align-items: center; justify-content: space-evenly; padding: 5px 6px; }
-        .control-btn { background: rgba(0,0,0,0.5) !important; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2) !important; color: #fff !important; font-size: 1rem; width: 38px; height: 38px; cursor: pointer; border-radius: 50%; }
+        .control-btn { background: rgba(0,0,0,0.5) !important; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2) !important; color: #fff !important; font-size: 1rem; width: 38px; height: 38px; cursor: pointer; border-radius: 50%; transition: 0.1s; }
         .control-btn:active { transform: scale(0.9); background: var(--primary-color) !important; color: #000 !important; }
         .play-btn { font-size: 1.4rem; width: 48px; height: 48px; background: var(--primary-color) !important; color: #000 !important; border: none !important; }
         .footer { position: absolute; bottom: 5px; left: 0; right: 0; text-align: center; padding: 4px; font-size: 0.5rem; color: rgba(255,255,255,0.4); z-index: 20; pointer-events: none; }
@@ -101,11 +101,6 @@
         .modal-btn { padding: 6px 12px; border-radius: 20px; cursor: pointer; background: #333; color: white; border: none; margin: 2px; }
         .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
         
-        .offline-status { position: fixed; top: 0; left: 0; right: 0; background: #ff9800; color: #000; text-align: center; padding: 4px; font-size: 0.7rem; z-index: 10001; transform: translateY(-100%); transition: transform 0.3s; }
-        .offline-status.show { transform: translateY(0); }
-        .offline-status.online { background: #4caf50; color: white; }
-        .offline-status.offline { background: #f44336; color: white; }
-        
         .audio-status-badge { position: fixed; top: 60px; left: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #fff; z-index: 2000; pointer-events: none; border: 1px solid rgba(255,255,255,0.2); }
         
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s; }
@@ -119,7 +114,6 @@
     </style>
 </head>
 <body class="theme-red">
-    <div class="offline-status" id="offlineStatus"><i class="fas fa-wifi"></i> <span id="offlineStatusText">Online</span></div>
     <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>MUTV Playlist</h1><p>Clique no botão para ativar áudio</p></div></div>
     <div id="tap-to-start"><i class="fas fa-play-circle"></i> 🎵 ATIVAR ÁUDIO (Toca com tela bloqueada)</div>
     <div class="audio-status-badge" id="audioStatusBadge"><i class="fas fa-microphone-alt"></i> Aguardando ativação</div>
@@ -130,23 +124,17 @@
                 <source src="pizza.mp4" type="video/mp4">
             </video>
         </div>
-        
         <button class="cta-button" id="ctaButton"><i class="fas fa-shopping-cart"></i> PEÇA AGORA!</button>
-        
         <div class="top-ticker">
             <div class="ticker-container-top">
-                <div class="ticker-text-top">
-                    <i class="fas fa-headphones-alt fa-spin"></i> MUTV - Plataforma que transforma a Tv do comércio em um canal de vendas com música e publicidade integrada - Informações: 12 98846-1978 <i class="fas fa-music fa-beat"></i>
-                </div>
+                <div class="ticker-text-top"><i class="fas fa-headphones-alt fa-spin"></i> MUTV - Plataforma que transforma a Tv do comércio em um canal de vendas com música e publicidade integrada - Informações: 12 98846-1978 <i class="fas fa-music fa-beat"></i></div>
             </div>
         </div>
-        
         <div class="controls-overlay">
             <div class="top-bar">
                 <button class="top-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
                 <button class="top-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-h"></i></button>
             </div>
-            
             <div class="player-card">
                 <div class="track-info"><p id="trackArtist">🎵 Clique em "ATIVAR ÁUDIO"</p></div>
                 <div class="progress-area">
@@ -160,7 +148,6 @@
                     <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
                 </div>
             </div>
-            
             <div class="footer">MUTV - Playlist 2025 • Toca com tela bloqueada</div>
         </div>
     </div>
@@ -173,20 +160,7 @@
         <div class="drawer-content">
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
             <button class="mode-toggle-btn" id="toggleAllSongsBtn"><i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas</button>
-            
-            <div class="color-picker">
-                <div class="color-option red active" data-theme="theme-red"></div>
-                <div class="color-option lilac" data-theme="theme-lilac"></div>
-                <div class="color-option blue" data-theme="theme-blue"></div>
-                <div class="color-option green" data-theme="theme-green"></div>
-                <div class="color-option orange" data-theme="theme-orange"></div>
-                <div class="color-option pink" data-theme="theme-pink"></div>
-                <div class="color-option purple" data-theme="theme-purple"></div>
-                <div class="color-option yellow" data-theme="theme-yellow"></div>
-                <div class="color-option white" data-theme="theme-white"></div>
-                <div class="color-option pure-black" data-theme="theme-pure-black"></div>
-            </div>
-            
+            <div class="color-picker" id="colorPicker"></div>
             <div class="ad-panel">
                 <h4><i class="fas fa-microphone-alt"></i> 📢 ANÚNCIOS</h4>
                 <div class="ad-timer" id="adTimer">30</div>
@@ -197,7 +171,6 @@
                     <button class="ad-btn" id="skipAdBtn" style="display:none;">Pular</button>
                 </div>
             </div>
-            
             <h4 style="color: var(--primary-color);">🎵 Playlist</h4>
             <div class="playlist-container" id="playlistContainer"></div>
         </div>
@@ -207,192 +180,13 @@
     <div class="feedback-btn" id="feedbackBtn"><i class="fas fa-comment-dots"></i></div>
     <div class="feedback-modal" id="feedbackModal">
         <h3>Sua opinião</h3>
-        <div class="rating" id="ratingStars">
-            <i class="far fa-star star" data-rating="1"></i>
-            <i class="far fa-star star" data-rating="2"></i>
-            <i class="far fa-star star" data-rating="3"></i>
-            <i class="far fa-star star" data-rating="4"></i>
-            <i class="far fa-star star" data-rating="5"></i>
-        </div>
+        <div class="rating" id="ratingStars"><i class="far fa-star star" data-rating="1"></i><i class="far fa-star star" data-rating="2"></i><i class="far fa-star star" data-rating="3"></i><i class="far fa-star star" data-rating="4"></i><i class="far fa-star star" data-rating="5"></i></div>
         <textarea id="feedbackText" placeholder="Escreva sua sugestão..."></textarea>
-        <div class="modal-buttons">
-            <button class="modal-btn cancel" id="cancelFeedback">Cancelar</button>
-            <button class="modal-btn send" id="sendFeedback"><i class="fab fa-whatsapp"></i> Enviar</button>
-        </div>
+        <div class="modal-buttons"><button class="modal-btn cancel" id="cancelFeedback">Cancelar</button><button class="modal-btn send" id="sendFeedback"><i class="fab fa-whatsapp"></i> Enviar</button></div>
     </div>
     
     <script>
-        // ==================== CONFIGURAÇÃO PARA TOCAR EM SEGUNDO PLANO ====================
-        let audioContext = null;
-        let audioInitialized = false;
-        let silentSource = null;
-        let mediaSourceConnected = false;
-        let keepAliveInterval = null;
-        
-        // Inicia o AudioContext com som silencioso (só funciona após clique do usuário)
-        async function initBackgroundAudio() {
-            if (audioInitialized && audioContext && audioContext.state === 'running') {
-                return true;
-            }
-            
-            try {
-                // Cria o AudioContext se não existir
-                if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                
-                // Cria buffer de silêncio para manter o contexto ativo
-                const sampleRate = audioContext.sampleRate;
-                const bufferLength = sampleRate * 4; // 4 segundos de silêncio
-                const silentBuffer = audioContext.createBuffer(1, bufferLength, sampleRate);
-                const channelData = silentBuffer.getChannelData(0);
-                for (let i = 0; i < bufferLength; i++) channelData[i] = 0;
-                
-                // Para o nó antigo se existir
-                if (silentSource) {
-                    try { silentSource.stop(); } catch(e) {}
-                    try { silentSource.disconnect(); } catch(e) {}
-                }
-                
-                // Cria nova fonte de silêncio
-                silentSource = audioContext.createBufferSource();
-                silentSource.buffer = silentBuffer;
-                silentSource.loop = true;
-                silentSource.connect(audioContext.destination);
-                silentSource.start();
-                
-                // Conecta o player de música ao AudioContext (apenas uma vez)
-                if (!mediaSourceConnected && musicPlayer) {
-                    try {
-                        // Remove conexão antiga se existir
-                        if (musicPlayer._mediaSource) {
-                            try { musicPlayer._mediaSource.disconnect(); } catch(e) {}
-                        }
-                        const source = audioContext.createMediaElementSource(musicPlayer);
-                        const gain = audioContext.createGain();
-                        source.connect(gain);
-                        gain.connect(audioContext.destination);
-                        gain.gain.value = 0.9;
-                        musicPlayer._mediaSource = source;
-                        musicPlayer._gainNode = gain;
-                        mediaSourceConnected = true;
-                        console.log('✅ MusicPlayer conectado ao AudioContext');
-                    } catch(e) {
-                        console.log('MediaElementSource já conectado ou erro:', e);
-                        mediaSourceConnected = true;
-                    }
-                }
-                
-                // Conecta o player de anúncios
-                if (adPlayer && !adPlayer._connected) {
-                    try {
-                        const source = audioContext.createMediaElementSource(adPlayer);
-                        const gain = audioContext.createGain();
-                        source.connect(gain);
-                        gain.connect(audioContext.destination);
-                        gain.gain.value = 0.9;
-                        adPlayer._connected = true;
-                    } catch(e) {}
-                }
-                
-                // Garante que o contexto está rodando
-                if (audioContext.state === 'suspended') {
-                    await audioContext.resume();
-                }
-                
-                audioInitialized = true;
-                
-                // Atualiza badge
-                const badge = document.getElementById('audioStatusBadge');
-                if (badge) {
-                    badge.innerHTML = '<i class="fas fa-check-circle"></i> ✅ Áudio ativado! Toca em segundo plano';
-                    badge.style.background = 'rgba(76, 175, 80, 0.8)';
-                }
-                
-                console.log('✅ AudioContext ativado! Música vai tocar em segundo plano');
-                return true;
-            } catch (error) {
-                console.error('❌ Erro ao ativar AudioContext:', error);
-                return false;
-            }
-        }
-        
-        // Mantém o AudioContext ativo e verifica se a música ainda está tocando
-        function startKeepAlive() {
-            if (keepAliveInterval) clearInterval(keepAliveInterval);
-            
-            keepAliveInterval = setInterval(async () => {
-                // Mantém o AudioContext ativo
-                if (audioContext && audioContext.state === 'suspended') {
-                    await audioContext.resume();
-                    console.log('🔄 AudioContext retomado');
-                }
-                
-                // Verifica se a música deveria estar tocando mas parou
-                if (isPlaying && !isAdPlaying) {
-                    if (musicPlayer.paused) {
-                        console.log('🔄 Música pausada inesperadamente, retomando...');
-                        try {
-                            await musicPlayer.play();
-                        } catch(e) {
-                            console.log('Erro ao retomar:', e);
-                            // Tenta reconectar
-                            await initBackgroundAudio();
-                            try {
-                                await musicPlayer.play();
-                            } catch(e2) {}
-                        }
-                    }
-                }
-                
-                // Reinicia o som silencioso se necessário
-                if (audioContext && silentSource && (!silentSource.buffer || silentSource.playbackState === 'ended')) {
-                    try {
-                        const sampleRate = audioContext.sampleRate;
-                        const bufferLength = sampleRate * 4;
-                        const silentBuffer = audioContext.createBuffer(1, bufferLength, sampleRate);
-                        const channelData = silentBuffer.getChannelData(0);
-                        for (let i = 0; i < bufferLength; i++) channelData[i] = 0;
-                        silentSource.buffer = silentBuffer;
-                        silentSource.start();
-                    } catch(e) {}
-                }
-            }, 5000);
-        }
-        
-        // ==================== VÍDEOS ====================
-        const videosList = [
-            { src: "pizza.mp4", nome: "Vídeo Principal", link: "https://wa.me/5512988461978" },
-            { src: "lançamento.mp4", nome: "MUTV", link: "https://wa.me/5512988461978" },
-            { src: "copos.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" }
-        ];
-        
-        let currentVideoIndex = 0;
-        let videoInterval = null;
-        
-        function alternarVideoAutomatico() {
-            currentVideoIndex = (currentVideoIndex + 1) % videosList.length;
-            const video = videosList[currentVideoIndex];
-            const videoElement = document.getElementById('mainVideo');
-            const ctaButton = document.getElementById('ctaButton');
-            
-            if (videoElement && video) {
-                videoElement.pause();
-                videoElement.src = video.src;
-                videoElement.load();
-                videoElement.play().catch(e => console.log('Erro ao tocar vídeo:', e));
-                if (ctaButton && video.link) {
-                    ctaButton.onclick = () => window.open(video.link, '_blank');
-                }
-            }
-        }
-        
-        function iniciarAlternanciaVideos() {
-            if (videoInterval) clearInterval(videoInterval);
-            videoInterval = setInterval(alternarVideoAutomatico, 20000);
-        }
-        
-        // ==================== PLAYLIST ====================
+        // ==================== PLAYLIST & CONFIG ====================
         const musicas = [
             { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Remember The Time", artist: "A_cha", src: "A_cha_Remember_The_Time_KorgStyle_Life_muzzik.m4a", periodo: "noite" },
@@ -403,13 +197,10 @@
             { id: 7, title: "Hotel California", artist: "Eagles", src: "Eagles_Hotel_California_12.m4a", periodo: "todos" },
             { id: 8, title: "What's Up", artist: "Non_Blondes", src: "WHAT_S_UP_Non_Blondes_Subt_tulos_ingl_s_y_espa_ol_muzzik.m4a", periodo: "todos" }
         ];
+        const anunciosAudio = [{ src: "zzcv.mp3", nome: "Oferta Especial" }, { src: "zzcv.mp3", nome: "Promoção Relâmpago" }];
+        const videosList = [{ src: "pizza.mp4", nome: "Principal", link: "https://wa.me/5512988461978" }, { src: "lançamento.mp4", nome: "MUTV", link: "https://wa.me/5512988461978" }, { src: "copos.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" }];
         
-        const anunciosAudio = [
-            { src: "zzcv.mp3", nome: "Oferta Especial" },
-            { src: "zzcv.mp3", nome: "Promoção Relâmpago" }
-        ];
-        
-        // Elementos DOM
+        // DOM elements
         const musicPlayer = document.getElementById('musicPlayer');
         const adPlayer = document.getElementById('adPlayer');
         const playBtn = document.getElementById('playPauseBtn');
@@ -426,506 +217,226 @@
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
         
         let currentIndex = 0, isPlaying = false, shuffle = false, allSongsMode = true, filteredPlaylist = [];
-        let timerInterval = null;
-        let isAdPlaying = false;
-        let adsEnabled = true;
-        let adInterval = 30;
-        let currentAdIndex = 0;
-        let shouldResumeMusic = false;
-        let musicPausedTime = 0;
-        let adTimerInterval = null;
+        let timerInterval = null, isAdPlaying = false, adsEnabled = true, adInterval = 30, currentAdIndex = 0, shouldResumeMusic = false, musicPausedTime = 0;
         
-        musicPlayer.volume = 0.9;
-        adPlayer.volume = 0.9;
+        // ==================== AUDIO CONTEXT (BACKGROUND LOCK) ====================
+        let audioCtx = null;
+        let silentSourceNode = null;
+        let musicSourceNode = null;
+        let adSourceNode = null;
+        let musicGain = null;
+        let adGain = null;
+        let audioActive = false;
+        let keepAliveInterval = null;
         
-        function formatTime(seconds) {
-            if (isNaN(seconds)) return "0:00";
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        async function initAudioContext() {
+            if (audioActive && audioCtx && audioCtx.state === 'running') return true;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') await audioCtx.resume();
+                
+                // Create silent buffer (4 seconds loop) to keep context alive
+                const sampleRate = audioCtx.sampleRate;
+                const bufferLen = sampleRate * 4;
+                const silentBuffer = audioCtx.createBuffer(1, bufferLen, sampleRate);
+                const data = silentBuffer.getChannelData(0);
+                for (let i = 0; i < bufferLen; i++) data[i] = 0;
+                
+                if (silentSourceNode) {
+                    try { silentSourceNode.stop(); silentSourceNode.disconnect(); } catch(e) {}
+                }
+                silentSourceNode = audioCtx.createBufferSource();
+                silentSourceNode.buffer = silentBuffer;
+                silentSourceNode.loop = true;
+                silentSourceNode.connect(audioCtx.destination);
+                silentSourceNode.start();
+                
+                // Connect musicPlayer (clean previous if exists)
+                if (musicSourceNode) {
+                    try { musicSourceNode.disconnect(); } catch(e) {}
+                    musicSourceNode = null;
+                }
+                musicSourceNode = audioCtx.createMediaElementSource(musicPlayer);
+                musicGain = audioCtx.createGain();
+                musicGain.gain.value = 0.9;
+                musicSourceNode.connect(musicGain);
+                musicGain.connect(audioCtx.destination);
+                
+                // Connect adPlayer
+                if (adSourceNode) {
+                    try { adSourceNode.disconnect(); } catch(e) {}
+                }
+                adSourceNode = audioCtx.createMediaElementSource(adPlayer);
+                adGain = audioCtx.createGain();
+                adGain.gain.value = 0.9;
+                adSourceNode.connect(adGain);
+                adGain.connect(audioCtx.destination);
+                
+                audioActive = true;
+                document.getElementById('audioStatusBadge').innerHTML = '<i class="fas fa-check-circle"></i> ✅ Áudio ativado! Toca em segundo plano';
+                document.getElementById('audioStatusBadge').style.background = 'rgba(76, 175, 80, 0.8)';
+                console.log('✅ AudioContext ativo + media elements roteados');
+                return true;
+            } catch (err) {
+                console.error('Erro AudioContext:', err);
+                return false;
+            }
         }
         
-        // FUNÇÃO PRINCIPAL: Tocar música COM suporte contínuo a segundo plano
+        function startKeepAliveService() {
+            if (keepAliveInterval) clearInterval(keepAliveInterval);
+            keepAliveInterval = setInterval(async () => {
+                if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
+                if (audioCtx && silentSourceNode && silentSourceNode.buffer && silentSourceNode.playbackState === 'finished') {
+                    try { silentSourceNode.start(); } catch(e) {}
+                }
+                if (isPlaying && !isAdPlaying && musicPlayer.paused && audioActive) {
+                    console.log('🔄 KeepAlive: retomando música pausada');
+                    await musicPlayer.play().catch(e => console.log);
+                }
+            }, 4000);
+        }
+        
+        // ==================== MUSIC LOGIC ====================
+        function formatTime(sec) { if (isNaN(sec)) return "0:00"; const m = Math.floor(sec / 60), s = Math.floor(sec % 60); return `${m}:${s<10?'0':''}${s}`; }
+        function stopTimer() { if (timerInterval) clearInterval(timerInterval); timerInterval = null; }
+        function startTimer() { stopTimer(); timerInterval = setInterval(() => { if (isPlaying && !isAdPlaying && musicPlayer.duration && !musicPlayer.paused) { progressFill.style.width = (musicPlayer.currentTime/musicPlayer.duration)*100+'%'; currentTimeEl.textContent = formatTime(musicPlayer.currentTime); } }, 200); }
+        
         async function playMusic() {
-            if (!audioInitialized) {
-                showNotification('⚠️ Clique no botão "ATIVAR ÁUDIO" primeiro!', 4000);
-                return false;
-            }
-            
-            if(isAdPlaying) {
-                showNotification('Aguarde o anúncio terminar');
-                return false;
-            }
-            
+            if (!audioActive) { showNotification('⚠️ Clique no botão "ATIVAR ÁUDIO" primeiro!', 3000); return false; }
+            if (isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return false; }
             const track = musicas[currentIndex];
-            if (!track || !track.src) {
-                console.error('Track inválida');
-                return false;
-            }
-            
-            // Salva o estado atual
-            const wasPlaying = isPlaying;
-            
-            // Para a música atual
+            if (!track || !track.src) return false;
             musicPlayer.pause();
-            
-            // Troca a fonte
             musicPlayer.src = track.src;
             musicPlayer.load();
-            
-            // Remove event listeners antigos para evitar duplicação
-            musicPlayer.oncanplaythrough = null;
-            musicPlayer.onended = null;
-            musicPlayer.onerror = null;
-            musicPlayer.ontimeupdate = null;
+            musicPlayer.oncanplaythrough = null; musicPlayer.onended = null; musicPlayer.onerror = null; musicPlayer.ontimeupdate = null;
             
             return new Promise((resolve) => {
                 musicPlayer.oncanplaythrough = async () => {
                     try {
-                        // Garante que o AudioContext está ativo
-                        if (audioContext && audioContext.state === 'suspended') {
-                            await audioContext.resume();
-                        }
-                        
+                        if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
                         await musicPlayer.play();
                         isPlaying = true;
                         playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                         startTimer();
-                        
-                        if (musicPlayer.duration) {
-                            totalTimeEl.textContent = formatTime(musicPlayer.duration);
-                        } else {
-                            musicPlayer.addEventListener('loadedmetadata', () => {
-                                totalTimeEl.textContent = formatTime(musicPlayer.duration);
-                            }, { once: true });
-                        }
-                        
-                        splash.classList.add('hidden');
-                        setTimeout(() => splash.style.display = 'none', 500);
+                        if (musicPlayer.duration) totalTimeEl.textContent = formatTime(musicPlayer.duration);
+                        else musicPlayer.addEventListener('loadedmetadata', () => { totalTimeEl.textContent = formatTime(musicPlayer.duration); }, { once: true });
+                        splash.classList.add('hidden'); setTimeout(() => splash.style.display = 'none', 500);
                         tapToStart.style.display = 'none';
                         renderPlaylist();
-                        
-                        // Atualiza MediaSession
                         if ('mediaSession' in navigator) {
-                            navigator.mediaSession.metadata = new MediaMetadata({
-                                title: track.title,
-                                artist: track.artist,
-                                album: 'MUTV Playlist'
-                            });
+                            navigator.mediaSession.metadata = new MediaMetadata({ title: track.title, artist: track.artist, album: 'MUTV' });
                             navigator.mediaSession.setActionHandler('play', () => playMusic());
                             navigator.mediaSession.setActionHandler('pause', () => pauseMusic());
                             navigator.mediaSession.setActionHandler('previoustrack', () => prevTrack());
                             navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack());
                         }
-                        
                         resolve(true);
-                    } catch (error) {
-                        console.error('Erro ao reproduzir:', error);
-                        isPlaying = false;
-                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                        resolve(false);
-                    }
+                    } catch(e) { console.error(e); isPlaying = false; playBtn.innerHTML = '<i class="fas fa-play"></i>'; resolve(false); }
                 };
-                
                 musicPlayer.onended = () => {
-                    console.log('🎵 Música terminou, carregando próxima...');
                     stopTimer();
-                    
-                    // Encontra próxima música
-                    let currentFilteredIndex = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
-                    if (currentFilteredIndex === -1) currentFilteredIndex = 0;
-                    
-                    let nextFilteredIndex;
-                    if (shuffle && filteredPlaylist.length > 1) {
-                        do {
-                            nextFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length);
-                        } while (nextFilteredIndex === currentFilteredIndex);
-                    } else {
-                        nextFilteredIndex = (currentFilteredIndex + 1) % filteredPlaylist.length;
-                    }
-                    
-                    const nextGlobalIndex = musicas.findIndex(m => m.id === filteredPlaylist[nextFilteredIndex].id);
-                    if (nextGlobalIndex !== -1) {
-                        currentIndex = nextGlobalIndex;
-                        loadTrack(currentIndex);
-                        // Toca a próxima música após um pequeno delay
-                        setTimeout(async () => {
-                            if (!isAdPlaying) {
-                                await playMusic();
-                            }
-                        }, 100);
-                    }
+                    let currentFiltered = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
+                    if (currentFiltered === -1) currentFiltered = 0;
+                    let nextFiltered;
+                    if (shuffle && filteredPlaylist.length > 1) { do { nextFiltered = Math.floor(Math.random() * filteredPlaylist.length); } while (nextFiltered === currentFiltered); }
+                    else nextFiltered = (currentFiltered + 1) % filteredPlaylist.length;
+                    const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[nextFiltered].id);
+                    if (newGlobal !== -1) { currentIndex = newGlobal; loadTrackUI(currentIndex); setTimeout(async () => { if (!isAdPlaying) await playMusic(); }, 80); }
                 };
-                
-                musicPlayer.onerror = () => { 
-                    showNotification(`⚠️ Arquivo não encontrado: ${track.title}`);
-                    setTimeout(() => {
-                        if (!isAdPlaying) nextTrack();
-                    }, 1000);
-                    resolve(false);
-                };
-                
-                musicPlayer.ontimeupdate = () => {
-                    if (musicPlayer.duration && !isNaN(musicPlayer.duration)) {
-                        const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
-                        progressFill.style.width = percent + '%';
-                        currentTimeEl.textContent = formatTime(musicPlayer.currentTime);
-                    }
-                };
+                musicPlayer.onerror = () => { showNotification(`⚠️ Erro: ${track.title}`); setTimeout(() => { if (!isAdPlaying) nextTrack(); }, 1000); resolve(false); };
+                musicPlayer.ontimeupdate = () => { if (musicPlayer.duration) { progressFill.style.width = (musicPlayer.currentTime/musicPlayer.duration)*100+'%'; currentTimeEl.textContent = formatTime(musicPlayer.currentTime); } };
             });
         }
         
-        function pauseMusic() {
-            musicPlayer.pause();
-            isPlaying = false;
-            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            stopTimer();
-            renderPlaylist();
-        }
+        function pauseMusic() { musicPlayer.pause(); isPlaying = false; playBtn.innerHTML = '<i class="fas fa-play"></i>'; stopTimer(); renderPlaylist(); }
+        function togglePlayPause() { isPlaying ? pauseMusic() : playMusic(); }
+        function loadTrackUI(index) { if (index >= musicas.length) index = 0; if (index < 0) index = musicas.length-1; currentIndex = index; const t = musicas[currentIndex]; trackArtist.textContent = `${t.title} - ${t.artist}`; currentTimeEl.textContent = '0:00'; totalTimeEl.textContent = '0:00'; progressFill.style.width = '0%'; renderPlaylist(); }
         
-        function togglePlayPause() { 
-            isPlaying ? pauseMusic() : playMusic(); 
-        }
+        async function nextTrack() { if (isAdPlaying) return; stopTimer(); let currentFiltered = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id); if (currentFiltered === -1) currentFiltered = 0; let nextFiltered; if (shuffle && filteredPlaylist.length > 1) { do { nextFiltered = Math.floor(Math.random() * filteredPlaylist.length); } while (nextFiltered === currentFiltered); } else nextFiltered = (currentFiltered + 1) % filteredPlaylist.length; const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[nextFiltered].id); if (newGlobal !== -1) { currentIndex = newGlobal; loadTrackUI(currentIndex); if (isPlaying) await playMusic(); } }
+        async function prevTrack() { if (isAdPlaying) return; stopTimer(); let currentFiltered = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id); if (currentFiltered === -1) currentFiltered = 0; let prevFiltered = (currentFiltered - 1 + filteredPlaylist.length) % filteredPlaylist.length; const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[prevFiltered].id); if (newGlobal !== -1) { currentIndex = newGlobal; loadTrackUI(currentIndex); if (isPlaying) await playMusic(); } }
         
-        function updateFilteredPlaylist() {
-            if(allSongsMode) { 
-                filteredPlaylist = [...musicas]; 
-            } else {
-                const hora = new Date().getHours();
-                let periodo = hora >= 12 && hora < 18 ? "tarde" : (hora >= 18 ? "noite" : "manha");
-                filteredPlaylist = musicas.filter(m => m.periodo === periodo || m.periodo === "todos");
-                if(filteredPlaylist.length === 0) filteredPlaylist = [...musicas];
-            }
-            renderPlaylist();
-        }
+        window.selectSong = async function(globalIdx) { if (isAdPlaying) return; stopTimer(); currentIndex = globalIdx; loadTrackUI(currentIndex); if (isPlaying) await playMusic(); closeDrawer(); };
         
-        function renderPlaylist() {
-            let html = '';
-            filteredPlaylist.forEach((m, idx) => {
-                const globalIdx = musicas.findIndex(p => p.id === m.id);
-                const isActive = (globalIdx === currentIndex && isPlaying);
-                html += `<div class="playlist-item ${isActive ? 'playing' : ''}" onclick="window.selectSong(${globalIdx})">
-                            <div class="music-number">${(idx+1).toString().padStart(2,'0')}</div>
-                            <div class="playlist-info">
-                                <div class="playlist-title">${m.title}</div>
-                                <div class="playlist-artist">${m.artist}</div>
-                            </div>
-                        </div>`;
-            });
-            playlistContainer.innerHTML = html;
-        }
+        function updateFilteredPlaylist() { if(allSongsMode) filteredPlaylist = [...musicas]; else { const hora = new Date().getHours(); let periodo = hora >=12 && hora<18 ? "tarde" : (hora>=18 ? "noite" : "manha"); filteredPlaylist = musicas.filter(m => m.periodo === periodo || m.periodo === "todos"); if(!filteredPlaylist.length) filteredPlaylist = [...musicas]; } renderPlaylist(); }
+        function renderPlaylist() { let html = ''; filteredPlaylist.forEach((m, idx) => { const globalIdx = musicas.findIndex(p => p.id === m.id); const active = (globalIdx === currentIndex && isPlaying); html += `<div class="playlist-item ${active ? 'playing' : ''}" onclick="selectSong(${globalIdx})"><div class="music-number">${(idx+1).toString().padStart(2,'0')}</div><div class="playlist-info"><div class="playlist-title">${m.title}</div><div class="playlist-artist">${m.artist}</div></div></div>`; }); playlistContainer.innerHTML = html; }
         
-        function loadTrack(index) {
-            if(index >= musicas.length) index = 0;
-            if(index < 0) index = musicas.length - 1;
-            currentIndex = index;
-            const track = musicas[currentIndex];
-            if (track) {
-                trackArtist.textContent = `${track.title} - ${track.artist}`;
-                currentTimeEl.textContent = '0:00';
-                totalTimeEl.textContent = '0:00';
-                progressFill.style.width = '0%';
-                renderPlaylist();
-            }
-        }
+        // ==================== ADS ====================
+        function finishAudioAd() { isAdPlaying = false; document.getElementById('adStatus').innerHTML = `<i class="fas fa-clock"></i> Próximo em ${adInterval} min`; document.getElementById('skipAdBtn').style.display = 'none'; if(shouldResumeMusic) { musicPlayer.currentTime = musicPausedTime; playMusic(); shouldResumeMusic = false; } currentAdIndex++; }
+        function playAudioAd() { if(!adsEnabled || isAdPlaying) return; if(isPlaying) { musicPausedTime = musicPlayer.currentTime; pauseMusic(); shouldResumeMusic = true; } else shouldResumeMusic = false; const ad = anunciosAudio[currentAdIndex % anunciosAudio.length]; adPlayer.src = ad.src; adPlayer.load(); isAdPlaying = true; document.getElementById('adStatus').innerHTML = `<i class="fas fa-volume-up"></i> Tocando: ${ad.nome}`; document.getElementById('skipAdBtn').style.display = 'inline-block'; adPlayer.play().catch(()=>finishAudioAd()); adPlayer.onended = finishAudioAd; adPlayer.onerror = finishAudioAd; }
+        function startAdTimer() { setInterval(() => { if(adsEnabled && !isAdPlaying && isPlaying) playAudioAd(); }, adInterval * 60 * 1000); }
+        function toggleAds() { adsEnabled = !adsEnabled; document.getElementById('toggleAdsBtn').innerHTML = adsEnabled ? 'Ativo' : 'Inativo'; showNotification(adsEnabled ? '📢 Anúncios ativados' : '🔇 Anúncios desativados'); }
+        function testAd() { if(isPlaying) playAudioAd(); else showNotification('⚠️ Toque uma música primeiro'); }
+        function skipAd() { if(isAdPlaying) { adPlayer.pause(); finishAudioAd(); showNotification('⏭️ Pulado'); } }
         
-        function startTimer() {
-            if(timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                if(isPlaying && !isAdPlaying && musicPlayer.duration && !musicPlayer.paused) {
-                    const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
-                    progressFill.style.width = percent + '%';
-                    currentTimeEl.textContent = formatTime(musicPlayer.currentTime);
-                }
-            }, 100);
-        }
+        // ==================== UI HELPERS ====================
+        function showNotification(msg, dur=3000) { const n = document.getElementById('notification'); document.getElementById('notificationText').innerText = msg; n.classList.add('show'); setTimeout(() => n.classList.remove('show'), dur); }
+        function closeDrawer() { document.getElementById('drawer').classList.remove('open'); }
+        function setTheme(themeClass) { document.body.className = themeClass; localStorage.setItem('radioTheme', themeClass); }
         
-        function stopTimer() { 
-            if(timerInterval) { 
-                clearInterval(timerInterval); 
-                timerInterval = null; 
-            } 
-        }
-        
-        async function nextTrack() {
-            if(isAdPlaying) return;
-            stopTimer();
-            
-            let currentFilteredIndex = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
-            if(currentFilteredIndex === -1) currentFilteredIndex = 0;
-            
-            let nextFilteredIndex;
-            if(shuffle && filteredPlaylist.length > 1) {
-                do {
-                    nextFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length);
-                } while(nextFilteredIndex === currentFilteredIndex);
-            } else { 
-                nextFilteredIndex = (currentFilteredIndex + 1) % filteredPlaylist.length; 
-            }
-            
-            const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[nextFilteredIndex].id);
-            if (newGlobal !== -1) {
-                currentIndex = newGlobal;
-                loadTrack(currentIndex);
-                if(isPlaying) await playMusic();
-            }
-        }
-        
-        async function prevTrack() {
-            if(isAdPlaying) return;
-            stopTimer();
-            
-            let currentFilteredIndex = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
-            if(currentFilteredIndex === -1) currentFilteredIndex = 0;
-            
-            let prevFilteredIndex;
-            if(shuffle && filteredPlaylist.length > 1) {
-                do {
-                    prevFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length);
-                } while(prevFilteredIndex === currentFilteredIndex);
-            } else { 
-                prevFilteredIndex = (currentFilteredIndex - 1 + filteredPlaylist.length) % filteredPlaylist.length; 
-            }
-            
-            const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[prevFilteredIndex].id);
-            if (newGlobal !== -1) {
-                currentIndex = newGlobal;
-                loadTrack(currentIndex);
-                if(isPlaying) await playMusic();
-            }
-        }
-        
-        window.selectSong = async function(globalIdx) {
-            if(isAdPlaying) return;
-            stopTimer();
-            currentIndex = globalIdx;
-            loadTrack(currentIndex);
-            if(isPlaying) await playMusic();
-            closeDrawer();
-        };
-        
-        function closeDrawer() { 
-            document.getElementById('drawer').classList.remove('open'); 
-        }
-        
-        function toggleAllSongsMode() {
-            allSongsMode = !allSongsMode;
-            updateFilteredPlaylist();
-            toggleAllSongsBtn.innerHTML = allSongsMode ? '<i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas' : '<i class="fas fa-clock"></i> ⏰ Modo: Período do dia';
-            const exists = filteredPlaylist.some(m => m.id === musicas[currentIndex].id);
-            if(!exists && filteredPlaylist.length) {
-                const newGlobal = musicas.findIndex(m => m.id === filteredPlaylist[0].id);
-                currentIndex = newGlobal;
-                loadTrack(currentIndex);
-                if(isPlaying) playMusic();
-            }
-        }
-        
-        function playAudioAd() {
-            if(!adsEnabled || isAdPlaying) return;
-            
-            if(isPlaying) { 
-                musicPausedTime = musicPlayer.currentTime; 
-                pauseMusic(); 
-                shouldResumeMusic = true; 
-            } else { 
-                shouldResumeMusic = false; 
-            }
-            
-            const ad = anunciosAudio[currentAdIndex % anunciosAudio.length];
-            adPlayer.src = ad.src;
-            adPlayer.load();
-            isAdPlaying = true;
-            document.getElementById('adStatus').innerHTML = `<i class="fas fa-volume-up"></i> Tocando: ${ad.nome}`;
-            document.getElementById('skipAdBtn').style.display = 'inline-block';
-            
-            adPlayer.play().catch(e => finishAudioAd());
-            adPlayer.onended = finishAudioAd;
-            adPlayer.onerror = finishAudioAd;
-        }
-        
-        function finishAudioAd() {
-            isAdPlaying = false;
-            document.getElementById('adStatus').innerHTML = '<i class="fas fa-clock"></i> Próximo em ' + adInterval + ' min';
-            document.getElementById('skipAdBtn').style.display = 'none';
-            
-            if(shouldResumeMusic) {
-                musicPlayer.currentTime = musicPausedTime;
-                playMusic();
-                shouldResumeMusic = false;
-            }
-            currentAdIndex++;
-        }
-        
-        function startAdTimer() {
-            if(adTimerInterval) clearInterval(adTimerInterval);
-            adTimerInterval = setInterval(() => {
-                if(adsEnabled && !isAdPlaying && isPlaying) {
-                    playAudioAd();
-                }
-            }, adInterval * 60 * 1000);
-        }
-        
-        function toggleAds() { 
-            adsEnabled = !adsEnabled; 
-            document.getElementById('toggleAdsBtn').innerHTML = adsEnabled ? 'Ativo' : 'Inativo';
-            showNotification(adsEnabled ? '📢 Anúncios ativados' : '🔇 Anúncios desativados');
-        }
-        
-        function testAd() { 
-            if(isPlaying) playAudioAd(); 
-            else showNotification('⚠️ Toque uma música primeiro');
-        }
-        
-        function skipAd() { 
-            if(isAdPlaying) { 
-                adPlayer.pause(); 
-                finishAudioAd(); 
-                showNotification('⏭️ Anúncio pulado'); 
-            } 
-        }
-        
-        function showNotification(msg, duration = 3000) {
-            const n = document.getElementById('notification');
-            document.getElementById('notificationText').innerText = msg;
-            n.classList.add('show');
-            setTimeout(() => n.classList.remove('show'), duration);
-        }
-        
-        function setTheme(themeClass) { 
-            document.body.className = themeClass; 
-            localStorage.setItem('radioTheme', themeClass); 
-        }
-        
-        // ==================== EVENTOS ====================
-        document.getElementById('progressBar').addEventListener('click', (e) => {
-            if(isAdPlaying) return;
-            const rect = e.currentTarget.getBoundingClientRect();
-            const percent = (e.clientX - rect.left) / rect.width;
-            if(musicPlayer.duration) musicPlayer.currentTime = percent * musicPlayer.duration;
-        });
-        
-        playBtn.addEventListener('click', () => {
-            if (!audioInitialized) {
-                showNotification('⚠️ Primeiro clique no botão "ATIVAR ÁUDIO"!', 4000);
-                return;
-            }
-            togglePlayPause();
-        });
-        prevBtn.addEventListener('click', () => prevTrack());
-        nextBtn.addEventListener('click', () => nextTrack());
-        shuffleBtn.addEventListener('click', () => { 
-            shuffle = !shuffle; 
-            showNotification(shuffle ? '🔀 Aleatório ON' : '➡️ Sequencial'); 
-        });
+        // ==================== EVENT LISTENERS ====================
+        document.getElementById('progressBar').addEventListener('click', (e) => { if(isAdPlaying) return; const rect = e.currentTarget.getBoundingClientRect(); const percent = (e.clientX - rect.left) / rect.width; if(musicPlayer.duration) musicPlayer.currentTime = percent * musicPlayer.duration; });
+        playBtn.addEventListener('click', () => { if(!audioActive) showNotification('⚠️ Clique em ATIVAR ÁUDIO primeiro!'); else togglePlayPause(); });
+        prevBtn.addEventListener('click', prevTrack); nextBtn.addEventListener('click', nextTrack);
+        shuffleBtn.addEventListener('click', () => { shuffle = !shuffle; showNotification(shuffle ? '🔀 Aleatório ON' : '➡️ Sequencial'); });
         document.getElementById('toggleAdsBtn').addEventListener('click', toggleAds);
         document.getElementById('testAdBtn').addEventListener('click', testAd);
         document.getElementById('skipAdBtn').addEventListener('click', skipAd);
         document.getElementById('videoMenuBtn').addEventListener('click', () => document.getElementById('drawer').classList.add('open'));
-        document.getElementById('fullscreenBtn').addEventListener('click', () => { 
-            if(document.fullscreenElement) document.exitFullscreen(); 
-            else document.documentElement.requestFullscreen(); 
-        });
+        document.getElementById('fullscreenBtn').addEventListener('click', () => { if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); });
         document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
-        document.getElementById('shareDrawerBtn').addEventListener('click', () => { 
-            if(navigator.share) navigator.share({title:'MUTV Playlist'}); 
-            else { 
-                navigator.clipboard.writeText(location.href); 
-                showNotification('Link copiado!'); 
-            } 
-        });
-        toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
+        document.getElementById('shareDrawerBtn').addEventListener('click', () => { if(navigator.share) navigator.share({title:'MUTV Playlist'}); else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); } });
+        toggleAllSongsBtn.addEventListener('click', () => { allSongsMode = !allSongsMode; updateFilteredPlaylist(); toggleAllSongsBtn.innerHTML = allSongsMode ? '<i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas' : '<i class="fas fa-clock"></i> ⏰ Modo: Período do dia'; const exists = filteredPlaylist.some(m => m.id === musicas[currentIndex].id); if(!exists && filteredPlaylist.length) { currentIndex = musicas.findIndex(m => m.id === filteredPlaylist[0].id); loadTrackUI(currentIndex); if(isPlaying) playMusic(); } });
+        
+        // Color picker
+        const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
+        setTheme(savedTheme);
+        const colorOptions = ['red','lilac','blue','green','orange','pink','purple','yellow','white','pure-black'];
+        const pickerDiv = document.getElementById('colorPicker');
+        colorOptions.forEach(c => { const div = document.createElement('div'); div.className = `color-option ${c} ${savedTheme === `theme-${c}` ? 'active' : ''}`; div.dataset.theme = `theme-${c}`; div.addEventListener('click', () => setTheme(div.dataset.theme)); pickerDiv.appendChild(div); });
         
         // Feedback
         let currentRating = 0;
-        document.querySelectorAll('.star').forEach(star => {
-            star.addEventListener('click', () => {
-                currentRating = parseInt(star.dataset.rating);
-                document.querySelectorAll('.star').forEach((s,i) => {
-                    if(i < currentRating) { s.classList.add('fas','active'); s.classList.remove('far'); }
-                    else { s.classList.remove('fas','active'); s.classList.add('far'); }
-                });
-            });
-        });
-        
+        document.querySelectorAll('#ratingStars .star').forEach(star => { star.addEventListener('click', () => { currentRating = parseInt(star.dataset.rating); document.querySelectorAll('#ratingStars .star').forEach((s,i) => { if(i < currentRating) { s.classList.add('fas','active'); s.classList.remove('far'); } else { s.classList.remove('fas','active'); s.classList.add('far'); } }); }); });
         document.getElementById('feedbackBtn').addEventListener('click', () => document.getElementById('feedbackModal').classList.toggle('open'));
-        document.getElementById('cancelFeedback').addEventListener('click', () => {
-            document.getElementById('feedbackModal').classList.remove('open');
-            document.getElementById('feedbackText').value = '';
-            currentRating = 0;
-            document.querySelectorAll('.star').forEach(s => { s.classList.remove('fas','active'); s.classList.add('far'); });
-        });
-        document.getElementById('sendFeedback').addEventListener('click', () => {
-            if(currentRating === 0) { showNotification('⭐ Selecione uma nota'); return; }
-            let msg = `🎵 *MUTV Playlist*\n⭐ Nota: ${'★'.repeat(currentRating)}${'☆'.repeat(5-currentRating)}\n`;
-            if(document.getElementById('feedbackText').value.trim()) msg += `💬 ${document.getElementById('feedbackText').value.trim()}\n`;
-            window.open(`https://wa.me/5512988461978?text=${encodeURIComponent(msg)}`, '_blank');
-            showNotification('✅ WhatsApp aberto!');
-            document.getElementById('feedbackModal').classList.remove('open');
-            document.getElementById('feedbackText').value = '';
-            currentRating = 0;
-            document.querySelectorAll('.star').forEach(s => { s.classList.remove('fas','active'); s.classList.add('far'); });
-        });
+        document.getElementById('cancelFeedback').addEventListener('click', () => { document.getElementById('feedbackModal').classList.remove('open'); document.getElementById('feedbackText').value = ''; currentRating = 0; document.querySelectorAll('#ratingStars .star').forEach(s => { s.classList.remove('fas','active'); s.classList.add('far'); }); });
+        document.getElementById('sendFeedback').addEventListener('click', () => { if(currentRating === 0) { showNotification('⭐ Selecione uma nota'); return; } let msg = `🎵 *MUTV Playlist*\n⭐ Nota: ${'★'.repeat(currentRating)}${'☆'.repeat(5-currentRating)}\n`; if(document.getElementById('feedbackText').value.trim()) msg += `💬 ${document.getElementById('feedbackText').value.trim()}\n`; window.open(`https://wa.me/5512988461978?text=${encodeURIComponent(msg)}`, '_blank'); showNotification('✅ WhatsApp aberto!'); document.getElementById('feedbackModal').classList.remove('open'); document.getElementById('feedbackText').value = ''; currentRating = 0; document.querySelectorAll('#ratingStars .star').forEach(s => { s.classList.remove('fas','active'); s.classList.add('far'); }); });
         
-        // ==================== BOTÃO DE ATIVAÇÃO ====================
+        // Video rotation
+        let currentVideoIndex = 0;
+        setInterval(() => { currentVideoIndex = (currentVideoIndex+1)%videosList.length; const video = videosList[currentVideoIndex]; const vidEl = document.getElementById('mainVideo'); if(vidEl) { vidEl.pause(); vidEl.src = video.src; vidEl.load(); vidEl.play().catch(e=>{}); document.getElementById('ctaButton').onclick = () => window.open(video.link, '_blank'); } }, 20000);
+        document.getElementById('ctaButton').onclick = () => window.open(videosList[0].link, '_blank');
+        
+        // ==================== INIT (USER TAP) ====================
         tapToStart.addEventListener('click', async (e) => {
             e.stopPropagation();
-            
-            showNotification('🔊 Ativando áudio para tocar em segundo plano...', 3000);
-            
-            const success = await initBackgroundAudio();
-            
-            if (success) {
+            showNotification('🔊 Ativando áudio para tela bloqueada...', 2000);
+            const ok = await initAudioContext();
+            if(ok) {
+                startKeepAliveService();
                 updateFilteredPlaylist();
-                const randomIndex = Math.floor(Math.random() * filteredPlaylist.length);
-                const randomGlobalIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomIndex].id);
-                currentIndex = randomGlobalIndex !== -1 ? randomGlobalIndex : 0;
-                loadTrack(currentIndex);
-                
+                const randomTrack = filteredPlaylist[Math.floor(Math.random()*filteredPlaylist.length)];
+                const globalIdx = musicas.findIndex(m => m.id === randomTrack.id);
+                currentIndex = globalIdx !== -1 ? globalIdx : 0;
+                loadTrackUI(currentIndex);
                 await playMusic();
-                
-                showNotification('✅ Áudio ativado! Agora toca com tela bloqueada!', 4000);
                 tapToStart.style.display = 'none';
-            } else {
-                showNotification('❌ Erro ao ativar áudio. Tente novamente.', 3000);
-            }
+                showNotification('✅ Áudio ativo! Toca mesmo com tela bloqueada', 4000);
+            } else showNotification('❌ Erro ao ativar áudio. Tente novamente.', 3000);
         });
         
-        // Inicialização
         window.addEventListener('load', () => {
-            const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
-            setTheme(savedTheme);
-            document.querySelectorAll('.color-option').forEach(opt => {
-                opt.addEventListener('click', () => setTheme(opt.dataset.theme));
-                if(opt.dataset.theme === savedTheme) opt.classList.add('active');
-                else opt.classList.remove('active');
-            });
-            
             updateFilteredPlaylist();
-            
-            const randomIndex = Math.floor(Math.random() * filteredPlaylist.length);
-            const randomGlobalIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomIndex].id);
-            currentIndex = randomGlobalIndex !== -1 ? randomGlobalIndex : 0;
-            loadTrack(currentIndex);
-            
+            const rand = filteredPlaylist[Math.floor(Math.random()*filteredPlaylist.length)];
+            currentIndex = musicas.findIndex(m => m.id === rand.id);
+            if(currentIndex === -1) currentIndex = 0;
+            loadTrackUI(currentIndex);
             startAdTimer();
-            iniciarAlternanciaVideos();
-            
-            const ctaButton = document.getElementById('ctaButton');
-            if (ctaButton && videosList[0].link) {
-                ctaButton.onclick = () => window.open(videosList[0].link, '_blank');
-            }
-            
             tapToStart.style.display = 'block';
-            
-            // Inicia o keep-alive para manter o áudio em segundo plano
-            startKeepAlive();
-            
-            setInterval(() => { 
-                if(!allSongsMode) updateFilteredPlaylist(); 
-            }, 60000);
-            
-            console.log('✅ MUTV Playlist - Clique no botão para ativar áudio com tela bloqueada!');
+            setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
         });
     </script>
 </body>
