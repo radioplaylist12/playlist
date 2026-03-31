@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TELA Playlist • Toca com tela bloqueada</title>
+    <title>MUTV Playlist • Toca com tela bloqueada</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -138,7 +138,7 @@
                     <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
                 </div>
             </div>
-            <div class="footer">TELAplay - Playlist 2025 • Toca com tela bloqueada</div>
+            <div class="footer">MUTV - Playlist 2025 • Toca com tela bloqueada</div>
         </div>
     </div>
     
@@ -190,7 +190,11 @@
             { id: 8, title: "What's Up", artist: "Non_Blondes", src: "WHAT_S_UP_Non_Blondes_Subt_tulos_ingl_s_y_espa_ol_muzzik.m4a", periodo: "todos" }
         ];
         const anunciosAudio = [{ src: "zzcv.mp3", nome: "Oferta Especial" }, { src: "zzcv.mp3", nome: "Promoção Relâmpago" }];
-        const videosList = [{ src: "pizza.mp4", nome: "Principal", link: "https://wa.me/5512988461978" }, { src: "lançamento.mp4", nome: "MUTV", link: "https://wa.me/5512988461978" }, { src: "copos.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" }];
+        const videosList = [
+            { src: "pizza.mp4", nome: "Principal", link: "https://wa.me/5512988461978" },
+            { src: "lançamento.mp4", nome: "MUTV", link: "https://wa.me/5512988461978" },
+            { src: "copos.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" }
+        ];
         
         // DOM elements
         const musicPlayer = document.getElementById('musicPlayer');
@@ -459,12 +463,12 @@
         // ==================== INIT (USER TAP) ====================
         tapToStart.addEventListener('click', async (e) => {
             e.stopPropagation();
-            showNotification('🔊 Ativando áudio para tela bloqueada...', 2000);
+            showNotification('🔊 Ativando áudio...', 1500);
             const ok = await initAudioContext();
             if(ok) {
                 startKeepAliveService();
                 setupVisibilityHandler();
-                setupSilentAudioWorkaround(); // fallback
+                setupSilentAudioWorkaround();
                 updateFilteredPlaylist();
                 const randomTrack = filteredPlaylist[Math.floor(Math.random()*filteredPlaylist.length)];
                 const globalIdx = musicas.findIndex(m => m.id === randomTrack.id);
@@ -472,7 +476,21 @@
                 loadTrackUI(currentIndex);
                 await playMusic();
                 tapToStart.style.display = 'none';
-                showNotification('✅ Áudio ativo! Toca mesmo com tela bloqueada', 4000);
+                
+                // Ativar tela cheia (fullscreen)
+                try {
+                    if (document.documentElement.requestFullscreen) {
+                        await document.documentElement.requestFullscreen();
+                    } else if (document.documentElement.webkitRequestFullscreen) {
+                        await document.documentElement.webkitRequestFullscreen();
+                    } else if (document.documentElement.msRequestFullscreen) {
+                        await document.documentElement.msRequestFullscreen();
+                    }
+                } catch (err) {
+                    console.log('Fullscreen não suportado ou bloqueado:', err);
+                }
+                // Notificação breve (opcional, pode remover)
+                // showNotification('✅ Áudio ativo!', 2000);
             } else showNotification('❌ Erro ao ativar áudio. Tente novamente.', 3000);
         });
         
