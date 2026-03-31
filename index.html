@@ -139,10 +139,37 @@
         .splash-content { text-align: center; color: #fff; }
         .splash-content i { font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.6; transform: scale(1); } }
+        
+        #tap-to-start {
+            position: fixed;
+            bottom: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ff6600, #ff3300);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            z-index: 10000;
+            cursor: pointer;
+            display: none;
+            animation: btnPulse 1.5s infinite;
+            white-space: nowrap;
+            pointer-events: auto;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border: none;
+        }
+        @keyframes btnPulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
     </style>
 </head>
 <body class="theme-red">
-    <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>MUTV Playlist</h1><p>Carregando...</p></div></div>
+    <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>MUTV Playlist</h1><p>Clique no botão para ativar áudio</p></div></div>
+    <div id="tap-to-start"><i class="fas fa-play-circle"></i> 🎵 ATIVAR ÁUDIO (Toca com tela bloqueada)</div>
     
     <div class="app">
         <div class="fullscreen-video-container">
@@ -158,7 +185,7 @@
         </div>
         <div class="controls-overlay">
             <div class="bottom-controls" id="bottomControls">
-                <div class="track-info"><p id="trackArtist">🎵 Carregando música...</p></div>
+                <div class="track-info"><p id="trackArtist">🎵 Clique em "ATIVAR ÁUDIO"</p></div>
                 <div class="progress-area">
                     <div class="progress-time"><span id="currentTime">0:00</span><span id="totalTime">0:00</span></div>
                     <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
@@ -240,6 +267,7 @@
         const totalTimeEl = document.getElementById('totalTime');
         const trackArtist = document.getElementById('trackArtist');
         const splash = document.getElementById('splash');
+        const tapToStart = document.getElementById('tap-to-start');
         const playlistContainer = document.getElementById('playlistContainer');
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
         
@@ -384,10 +412,7 @@
         function startTimer() { stopTimer(); timerInterval = setInterval(() => { if (isPlaying && !isAdPlaying && musicPlayer.duration && !musicPlayer.paused) { progressFill.style.width = (musicPlayer.currentTime/musicPlayer.duration)*100+'%'; currentTimeEl.textContent = formatTime(musicPlayer.currentTime); } }, 200); }
         
         async function playMusic() {
-            if (!audioActive) { 
-                const ok = await initAudioContext();
-                if (!ok) { showNotification('❌ Erro ao ativar áudio', 3000); return false; }
-            }
+            if (!audioActive) { showNotification('⚠️ Clique no botão "ATIVAR ÁUDIO" primeiro!', 3000); return false; }
             if (isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return false; }
             const track = musicas[currentIndex];
             if (!track || !track.src) return false;
@@ -407,6 +432,7 @@
                         if (musicPlayer.duration) totalTimeEl.textContent = formatTime(musicPlayer.duration);
                         else musicPlayer.addEventListener('loadedmetadata', () => { totalTimeEl.textContent = formatTime(musicPlayer.duration); }, { once: true });
                         splash.classList.add('hidden'); setTimeout(() => splash.style.display = 'none', 500);
+                        tapToStart.style.display = 'none';
                         renderPlaylist();
                         if ('mediaSession' in navigator) {
                             navigator.mediaSession.metadata = new MediaMetadata({ title: track.title, artist: track.artist, album: 'MUTV' });
@@ -463,7 +489,7 @@
         
         // ==================== EVENT LISTENERS ====================
         document.getElementById('progressBar').addEventListener('click', (e) => { if(isAdPlaying) return; const rect = e.currentTarget.getBoundingClientRect(); const percent = (e.clientX - rect.left) / rect.width; if(musicPlayer.duration) musicPlayer.currentTime = percent * musicPlayer.duration; resetHideTimer(); });
-        playBtn.addEventListener('click', () => { if(!audioActive) { initAudioContext().then(() => togglePlayPause()); } else togglePlayPause(); resetHideTimer(); });
+        playBtn.addEventListener('click', () => { if(!audioActive) showNotification('⚠️ Clique no botão "ATIVAR ÁUDIO" primeiro!'); else togglePlayPause(); resetHideTimer(); });
         prevBtn.addEventListener('click', () => { prevTrack(); resetHideTimer(); });
         nextBtn.addEventListener('click', () => { nextTrack(); resetHideTimer(); });
         shuffleBtn.addEventListener('click', () => { shuffle = !shuffle; showNotification(shuffle ? '🔀 Aleatório ON' : '➡️ Sequencial'); resetHideTimer(); });
@@ -500,8 +526,9 @@
         document.addEventListener('click', resetHideTimer);
         showControls();
         
-        // Inicialização automática - sem botão de ativação
-        async function autoInitialize() {
+        tapToStart.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            // NOTIFICAÇÃO REMOVIDA: showNotification('🔊 Ativando áudio...', 1500);
             const ok = await initAudioContext();
             if(ok) {
                 startKeepAliveService();
@@ -513,6 +540,7 @@
                 currentIndex = globalIdx !== -1 ? globalIdx : 0;
                 loadTrackUI(currentIndex);
                 await playMusic();
+                tapToStart.style.display = 'none';
                 try {
                     if (document.documentElement.requestFullscreen) {
                         await document.documentElement.requestFullscreen();
@@ -522,10 +550,8 @@
                         await document.documentElement.msRequestFullscreen();
                     }
                 } catch (err) { console.log('Fullscreen não suportado:', err); }
-            } else {
-                showNotification('❌ Erro ao iniciar áudio. Recarregue a página.', 3000);
-            }
-        }
+            } else showNotification('❌ Erro ao ativar áudio. Tente novamente.', 3000);
+        });
         
         window.addEventListener('load', () => {
             updateFilteredPlaylist();
@@ -534,7 +560,7 @@
             if(currentIndex === -1) currentIndex = 0;
             loadTrackUI(currentIndex);
             startAdTimer();
-            autoInitialize(); // Inicia automaticamente
+            tapToStart.style.display = 'block';
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
         });
     </script>
