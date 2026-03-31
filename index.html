@@ -124,21 +124,6 @@
             color: #000;
             border: none;
         }
-        .audio-status {
-            position: absolute;
-            bottom: 100%;
-            left: 16px;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(8px);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.65rem;
-            color: var(--primary-color);
-            margin-bottom: 8px;
-            pointer-events: none;
-            white-space: nowrap;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
         
         /* Menu lateral */
         .drawer { position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: rgba(10,10,10,0.95); backdrop-filter: blur(10px); transform: translateX(-100%); transition: transform 0.3s; z-index: 2000; padding: 20px; overflow-y: auto; border-right: 1px solid #333; }
@@ -250,7 +235,6 @@
                     <button class="control-btn" id="shuffleBtn"><i class="fas fa-random"></i></button>
                     <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
                 </div>
-                <div class="audio-status" id="audioStatusText"><i class="fas fa-volume-up"></i> Aguardando</div>
             </div>
         </div>
     </div>
@@ -325,7 +309,6 @@
         const tapToStart = document.getElementById('tap-to-start');
         const playlistContainer = document.getElementById('playlistContainer');
         const toggleAllSongsBtn = document.getElementById('toggleAllSongsBtn');
-        const audioStatusText = document.getElementById('audioStatusText');
         
         let currentIndex = 0, isPlaying = false, shuffle = false, allSongsMode = true, filteredPlaylist = [];
         let timerInterval = null, isAdPlaying = false, adsEnabled = true, adInterval = 30, currentAdIndex = 0, shouldResumeMusic = false, musicPausedTime = 0;
@@ -386,13 +369,10 @@
                 adGain.connect(audioCtx.destination);
                 
                 audioActive = true;
-                audioStatusText.innerHTML = '<i class="fas fa-check-circle"></i> Áudio ativado';
-                audioStatusText.style.color = 'var(--primary-color)';
                 console.log('✅ AudioContext ativo - Background playback OK');
                 return true;
             } catch (err) {
                 console.error('Erro AudioContext:', err);
-                audioStatusText.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro';
                 return false;
             }
         }
