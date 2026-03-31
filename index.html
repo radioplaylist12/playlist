@@ -61,7 +61,7 @@
             pointer-events: none;
         }
         
-        /* Ticker no topo - SEM FUNDO ESCURO */
+        /* Ticker no topo */
         .top-ticker {
             position: absolute;
             top: 0;
@@ -161,16 +161,16 @@
         
         .cta-button:active { transform: scale(0.95); }
         
-        /* Card do player */
+        /* Card do player - SEM FUNDO PRETO E SEM BORDA LARANJA */
         .player-card {
             position: absolute;
             bottom: 8%;
             left: 0;
             right: 0;
             margin: 0 20px;
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(8px);
-            border-radius: 12px;
+            background: transparent;
+            backdrop-filter: none;
+            border-radius: 0;
             padding: 6px 10px;
             z-index: 20;
             border: none;
@@ -178,10 +178,10 @@
         }
         
         .track-info { text-align: center; margin-bottom: 3px; }
-        .track-info p { font-size: 0.75rem; font-weight: 400; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; }
+        .track-info p { font-size: 0.75rem; font-weight: 400; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
         
         .progress-area { padding: 0 4px 3px; }
-        .progress-time { display: flex; justify-content: space-between; font-size: 0.55rem; color: var(--text-secondary); margin-bottom: 2px; }
+        .progress-time { display: flex; justify-content: space-between; font-size: 0.55rem; color: var(--text-secondary); margin-bottom: 2px; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); }
         .progress-bar { height: 2px; background: rgba(255,255,255,0.3); cursor: pointer; border-radius: 2px; }
         .progress-fill { height: 100%; background: var(--primary-color); width: 0%; border-radius: 2px; }
         
@@ -347,15 +347,8 @@
         }
         @keyframes btnPulse { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.02); } 100% { transform: translateX(-50%) scale(1); } }
         
-        /* Ocultar indicador de vídeo */
-        .video-indicator {
-            display: none;
-        }
-        
-        /* Ocultar mensagem "aguarde anúncio terminar" */
-        .ad-wait-message {
-            display: none;
-        }
+        .video-indicator { display: none; }
+        .ad-wait-message { display: none; }
     </style>
 </head>
 <body class="theme-red">
@@ -432,8 +425,8 @@
             
             <div class="ad-panel">
                 <h4><i class="fas fa-microphone-alt"></i> 📢 ANÚNCIOS DE ÁUDIO</h4>
-                <div class="ad-timer" id="adTimer">0.5</div>
-                <div class="ad-status" id="adStatus"><i class="fas fa-clock"></i> Próximo em 0.5 min</div>
+                <div class="ad-timer" id="adTimer">30</div>
+                <div class="ad-status" id="adStatus"><i class="fas fa-clock"></i> Próximo em 30 min</div>
                 <div class="ad-buttons">
                     <button class="ad-btn" id="toggleAdsBtn">Ativo</button>
                     <button class="ad-btn" id="testAdBtn">Testar</button>
@@ -499,8 +492,7 @@
             { src: "pizza.mp4", nome: "Vídeo Principal", link: "https://wa.me/5512988461978" },
             { src: "lançamento.mp4", nome: "MUTV", link: "https://wa.me/5512988461978" },
             { src: "copos.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
-            { src: "pizza.mp4", nome: "Destaque", link: "https://destaque.com.br/" },
-           
+            { src: "pizza.mp4", nome: "Destaque", link: "https://destaque.com.br/" }
         ];
         
         let currentVideoIndex = 0;
@@ -538,14 +530,15 @@
             { id: 4, title: "Vai Passar", artist: "Ferrugem", src: "Ferrugem_Paci_ncia_Part_Alcione_muzzik.m4a", periodo: "tarde" },
             { id: 5, title: "Perfume", artist: "Desejo", src: "PERFUME_Desejo_de_Menina_muzzik.m4a", periodo: "noite" },
             { id: 6, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
-            { id: 7, title: "Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", periodo: "noite" },
             { id: 8, title: "Hotel California", artist: "Eagles", src: "Eagles_Hotel_California_12.m4a", periodo: "todos" }
+            
         ];
         
+        // Anúncios de áudio usando zzcv.mp3
         const anunciosAudio = [
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", nome: "Oferta Especial" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", nome: "Promoção Relâmpago" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", nome: "Novidade Imperdível" }
+            { src: "zzcv.mp3", nome: "Oferta Especial" },
+            { src: "zzcv.mp3", nome: "Promoção Relâmpago" },
+            { src: "zzcv.mp3", nome: "Novidade Imperdível" }
         ];
         
         const musicPlayer = document.getElementById('musicPlayer');
@@ -567,7 +560,7 @@
         let timerInterval = null;
         let isAdPlaying = false;
         let adsEnabled = true;
-        let adInterval = 0.5;
+        let adInterval = 30;
         let currentAdIndex = 0;
         let shouldResumeMusic = false;
         let musicPausedTime = 0;
@@ -884,7 +877,7 @@
                 tapToStart.style.display = 'none';
             });
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
-            console.log('✅ Sistema inicializado');
+            console.log('✅ Sistema inicializado - Anúncios a cada 30 minutos');
         });
     </script>
 </body>
