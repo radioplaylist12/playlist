@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MUTV Playlist • Toca em Segundo Plano</title>
+    <title>Telaplay Playlist • Toca com tela bloqueada</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -148,12 +148,13 @@
                     <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
                 </div>
             </div>
-            <div class="footer">MUTV - Playlist 2025 • Toca com tela bloqueada</div>
+            <div class="footer">Telaplay - Playlist 2025 • Toca com tela bloqueada</div>
         </div>
     </div>
     
     <audio id="musicPlayer" preload="auto" crossorigin="anonymous"></audio>
     <audio id="adPlayer" preload="auto" crossorigin="anonymous"></audio>
+    <audio id="silentAudio" loop crossorigin="anonymous" style="display: none;"></audio>
     
     <div class="drawer" id="drawer">
         <div class="drawer-header"><button class="close-drawer" id="closeDrawer"><i class="fas fa-times"></i></button></div>
@@ -237,7 +238,7 @@
                 }
                 if (audioCtx.state === 'suspended') await audioCtx.resume();
                 
-                // Cria um buffer de silêncio de 4 segundos em loop para manter o contexto vivo
+                // Silent buffer (4 seconds) to keep context alive
                 const sampleRate = audioCtx.sampleRate;
                 const bufferLen = sampleRate * 4;
                 const silentBuffer = audioCtx.createBuffer(1, bufferLen, sampleRate);
@@ -253,7 +254,7 @@
                 silentSourceNode.connect(audioCtx.destination);
                 silentSourceNode.start();
                 
-                // Conecta o musicPlayer ao AudioContext
+                // Connect musicPlayer
                 if (musicSourceNode) {
                     try { musicSourceNode.disconnect(); } catch(e) {}
                     musicSourceNode = null;
@@ -264,7 +265,7 @@
                 musicSourceNode.connect(musicGain);
                 musicGain.connect(audioCtx.destination);
                 
-                // Conecta o adPlayer ao AudioContext
+                // Connect adPlayer
                 if (adSourceNode) {
                     try { adSourceNode.disconnect(); } catch(e) {}
                 }
@@ -277,7 +278,7 @@
                 audioActive = true;
                 document.getElementById('audioStatusBadge').innerHTML = '<i class="fas fa-check-circle"></i> ✅ Áudio ativado! Toca em segundo plano';
                 document.getElementById('audioStatusBadge').style.background = 'rgba(76, 175, 80, 0.8)';
-                console.log('✅ AudioContext ativo e players conectados');
+                console.log('✅ AudioContext ativo - Background playback OK');
                 return true;
             } catch (err) {
                 console.error('Erro AudioContext:', err);
@@ -310,6 +311,51 @@
                 }
                 if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
             });
+        }
+        
+        function setupSilentAudioWorkaround() {
+            const silentAudio = document.getElementById('silentAudio');
+            if (!silentAudio) return;
+            // Cria um WAV silencioso em memória e toca em loop
+            const createSilentWAV = () => {
+                const sampleRate = 44100;
+                const duration = 2;
+                const numSamples = sampleRate * duration;
+                const buffer = new ArrayBuffer(44 + numSamples * 2);
+                const view = new DataView(buffer);
+                function writeString(view, offset, str) {
+                    for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+                }
+                writeString(view, 0, 'RIFF');
+                view.setUint32(4, 36 + numSamples * 2, true);
+                writeString(view, 8, 'WAVE');
+                writeString(view, 12, 'fmt ');
+                view.setUint32(16, 16, true);
+                view.setUint16(20, 1, true);
+                view.setUint16(22, 1, true);
+                view.setUint32(24, sampleRate, true);
+                view.setUint32(28, sampleRate * 2, true);
+                view.setUint16(32, 2, true);
+                view.setUint16(34, 16, true);
+                writeString(view, 36, 'data');
+                view.setUint32(40, numSamples * 2, true);
+                let offset = 44;
+                for (let i = 0; i < numSamples; i++) {
+                    view.setInt16(offset, 0, true);
+                    offset += 2;
+                }
+                return new Blob([buffer], { type: 'audio/wav' });
+            };
+            try {
+                const silentBlob = createSilentWAV();
+                const silentUrl = URL.createObjectURL(silentBlob);
+                silentAudio.src = silentUrl;
+                silentAudio.loop = true;
+                silentAudio.volume = 0.001;
+                silentAudio.play().catch(e => console.log('Silent audio workaround:', e));
+            } catch (e) {
+                console.log('Erro no workaround de áudio:', e);
+            }
         }
         
         // ==================== MUSIC LOGIC ====================
@@ -431,6 +477,7 @@
             if(ok) {
                 startKeepAliveService();
                 setupVisibilityHandler();
+                setupSilentAudioWorkaround(); // fallback
                 updateFilteredPlaylist();
                 const randomTrack = filteredPlaylist[Math.floor(Math.random()*filteredPlaylist.length)];
                 const globalIdx = musicas.findIndex(m => m.id === randomTrack.id);
