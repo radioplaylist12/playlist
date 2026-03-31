@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MUTV Playlist • Offline Ready</title>
+    <title>Midia Playlist • Offline Ready</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -30,7 +30,7 @@
             overflow: hidden;
         }
         
-        /* Vídeo principal ocupando toda a tela */
+        /* Vídeo principal ocupando toda a tela - SEM TARJA PRETA */
         .fullscreen-video-container {
             position: absolute;
             top: 0;
@@ -50,7 +50,7 @@
             left: 0;
         }
         
-        /* Camada de overlay para controles */
+        /* Camada de overlay para controles - SEM FUNDO ESCURO */
         .controls-overlay {
             position: absolute;
             top: 0;
@@ -61,15 +61,16 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            pointer-events: none;
         }
         
-        /* Ticker no topo */
+        /* Ticker no topo - MAIS TRANSPARENTE */
         .top-ticker {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.2), transparent);
+            background: transparent;
             padding: 12px 12px 20px 12px;
             z-index: 15;
             pointer-events: none;
@@ -79,7 +80,7 @@
             width: 100%;
             overflow: hidden;
             white-space: nowrap;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.3);
             backdrop-filter: blur(4px);
             border-radius: 30px;
             padding: 6px 0;
@@ -108,10 +109,12 @@
             flex-direction: column;
             gap: 10px;
             z-index: 20;
+            pointer-events: auto;
         }
         
         .top-btn {
-            background: transparent;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
             color: white;
             border: none;
             font-size: 1.4rem;
@@ -122,10 +125,10 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            border-radius: 50%;
         }
         
-        .top-btn:active { transform: scale(0.9); color: var(--primary-color); }
+        .top-btn:active { transform: scale(0.9); background: var(--primary-color); }
         
         /* Botão flutuante "PEÇA AGORA!" */
         .cta-button {
@@ -148,6 +151,7 @@
             gap: 8px;
             white-space: nowrap;
             font-family: inherit;
+            pointer-events: auto;
         }
         
         .cta-button i { font-size: 1rem; }
@@ -160,19 +164,20 @@
         
         .cta-button:active { transform: scale(0.95); }
         
-        /* Card do player - mais fino e mais pra baixo */
+        /* Card do player - mais fino e transparente */
         .player-card {
             position: absolute;
             bottom: 8%;
             left: 0;
             right: 0;
             margin: 0 20px;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.3);
             backdrop-filter: blur(8px);
             border-radius: 12px;
             padding: 6px 10px;
             z-index: 20;
             border: none;
+            pointer-events: auto;
         }
         
         .track-info { text-align: center; margin-bottom: 3px; }
@@ -216,6 +221,7 @@
             font-size: 0.5rem;
             color: rgba(255,255,255,0.3);
             z-index: 20;
+            pointer-events: none;
         }
         
         /* Drawer (menu lateral) */
@@ -270,7 +276,7 @@
         .notification { position: fixed; bottom: 100px; left: 16px; right: 16px; background: #000; color: #fff; padding: 10px 16px; z-index: 3000; transform: translateY(100px); transition: transform 0.3s; border-left: 3px solid var(--primary-color); border-radius: 10px; text-align: center; font-size: 0.85rem; }
         .notification.show { transform: translateY(0); }
         
-        .feedback-btn { position: fixed; bottom: 20px; right: 20px; background: transparent; color: #ffffff !important; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; z-index: 2000; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        .feedback-btn { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); color: #ffffff !important; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; z-index: 2000; pointer-events: auto; }
         
         .feedback-modal { position: fixed; bottom: 80px; right: 20px; width: 260px; background: #1a1a1a; border: 1px solid var(--primary-color); border-radius: 12px; padding: 12px; z-index: 2001; display: none; }
         .feedback-modal.open { display: block; }
@@ -341,8 +347,14 @@
             display: none;
             animation: btnPulse 1.5s infinite;
             white-space: nowrap;
+            pointer-events: auto;
         }
         @keyframes btnPulse { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.02); } 100% { transform: translateX(-50%) scale(1); } }
+        
+        /* Esconder indicador de vídeo */
+        .video-indicator {
+            display: none;
+        }
     </style>
 </head>
 <body class="theme-red">
@@ -427,8 +439,8 @@
             
             <div class="ad-panel">
                 <h4><i class="fas fa-microphone-alt"></i> 📢 ANÚNCIOS DE ÁUDIO</h4>
-                <div class="ad-timer" id="adTimer">15</div>
-                <div class="ad-status" id="adStatus"><i class="fas fa-clock"></i> Próximo em 15 min</div>
+                <div class="ad-timer" id="adTimer">0.5</div>
+                <div class="ad-status" id="adStatus"><i class="fas fa-clock"></i> Próximo em 0.5 min</div>
                 <div class="ad-buttons">
                     <button class="ad-btn" id="toggleAdsBtn">Ativo</button>
                     <button class="ad-btn" id="testAdBtn">Testar</button>
@@ -494,11 +506,11 @@
         
         // Lista de vídeos para alternar automaticamente a cada 20 segundos
         const videosList = [
-            { src: "pri.mp4", nome: "Vídeo Principal", link: "https://wa.me/5512988461978" },
-            { src: "pizza.mp4", nome: "https://www.boluccioaruja.com.br/montar/pizzas-salgadas/" },
+            { src: "pizza.mp4", nome: "Vídeo Principal", link: "https://wa.me/5512988461978" },
+            { src: "pizza.mp4", nome: "MUTV", link: "https://wa.me/5512988461978" },
             { src: "copos.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
-            { src: "lançamento.mp4", nome: "Destaque", link: "https://www.tanaclick.com.br/outono-inverno/?srsltid=AfmBOoqpmahROhL89lS6IL0M1FhDSG0lZIWwoTtlMfw8LcO_eS17UJKI" },
-          
+            { src: "lançamento.mp4", nome: "Destaque", link: "https://destaque.com.br/" },
+            { src: "carro.mp4", nome: "Carro", link: "https://wa.me/5512988461978" }
         ];
         
         let currentVideoIndex = 0;
@@ -523,13 +535,13 @@
                     };
                 }
                 
-                showNotification(`🎬 Vídeo: ${video.nome}`, 2000);
+                console.log(`🎬 Vídeo: ${video.nome}`);
             }
         }
         
         function iniciarAlternanciaVideos() {
             if (videoInterval) clearInterval(videoInterval);
-            videoInterval = setInterval(alternarVideoAutomatico, 20000); // 20 segundos
+            videoInterval = setInterval(alternarVideoAutomatico, 20000);
         }
         
         // Playlist
@@ -539,15 +551,16 @@
             { id: 3, title: "Amiga Da Minha Mulher", artist: "Seu Jorge", src: "Amiga_Da_Minha_Mulher_Seu_Jorge_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Vai Passar", artist: "Ferrugem", src: "Ferrugem_Paci_ncia_Part_Alcione_muzzik.m4a", periodo: "tarde" },
             { id: 5, title: "Perfume", artist: "Desejo", src: "PERFUME_Desejo_de_Menina_muzzik.m4a", periodo: "noite" },
-            { id: 6, title: "Someone Like ", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
-            { id: 7, title: "Quem_dera_eu_Seu_Ze", artist: "Ana_Carolina", src: "Ana_Carolina_Quem_dera_eu_Seu_Z__muzzik.m4a", periodo: "noite" },
+            { id: 6, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
+            { id: 7, title: "Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", periodo: "noite" },
             { id: 8, title: "Hotel California", artist: "Eagles", src: "Eagles_Hotel_California_12.m4a", periodo: "todos" }
         ];
         
-        // Anúncios de áudio
+        // Anúncios de áudio - com áudio real
         const anunciosAudio = [
-            { src: "zzcv.mp3", nome: "Oferta Especial" },
-            { src: "zzcv.mp3", nome: "Promoção Relâmpago" }
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", nome: "Oferta Especial - Aproveite!" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", nome: "Promoção Relâmpago - Hoje!" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", nome: "Novidade Imperdível - Corra!" }
         ];
         
         // Elementos DOM
@@ -570,7 +583,7 @@
         let timerInterval = null;
         let isAdPlaying = false;
         let adsEnabled = true;
-        let adInterval = 15;
+        let adInterval = 0.5;
         let currentAdIndex = 0;
         let shouldResumeMusic = false;
         let musicPausedTime = 0;
@@ -729,22 +742,44 @@
         
         function playAudioAd() {
             if(!adsEnabled || isAdPlaying) return;
-            if(isPlaying) { musicPausedTime = musicPlayer.currentTime; pauseMusic(); shouldResumeMusic = true; }
-            else { shouldResumeMusic = false; }
+            if(isPlaying) { 
+                musicPausedTime = musicPlayer.currentTime; 
+                pauseMusic(); 
+                shouldResumeMusic = true; 
+            } else { 
+                shouldResumeMusic = false; 
+            }
+            
             const ad = anunciosAudio[currentAdIndex % anunciosAudio.length];
             adPlayer.src = ad.src;
             adPlayer.load();
             isAdPlaying = true;
             document.getElementById('adStatus').innerHTML = `<i class="fas fa-volume-up"></i> Tocando: ${ad.nome}`;
             document.getElementById('skipAdBtn').style.display = 'inline-block';
-            adPlayer.play().catch(e => finishAudioAd());
-            adPlayer.onended = finishAudioAd;
+            
+            adPlayer.play().then(() => {
+                console.log('✅ Anúncio tocando:', ad.nome);
+                showNotification(`📢 ${ad.nome}`, 3000);
+            }).catch(e => {
+                console.log('❌ Erro no anúncio:', e);
+                finishAudioAd();
+            });
+            
+            adPlayer.onended = () => {
+                console.log('✅ Anúncio finalizado');
+                finishAudioAd();
+            };
+            adPlayer.onerror = () => {
+                console.log('❌ Erro no anúncio');
+                finishAudioAd();
+            };
         }
         
         function finishAudioAd() {
             isAdPlaying = false;
             document.getElementById('adStatus').innerHTML = '<i class="fas fa-clock"></i> Próximo em ' + adInterval + ' min';
             document.getElementById('skipAdBtn').style.display = 'none';
+            
             if(shouldResumeMusic) {
                 musicPlayer.currentTime = musicPausedTime;
                 playMusicWithAudioContext();
@@ -756,13 +791,34 @@
         function startAdTimer() {
             if(adTimerInterval) clearInterval(adTimerInterval);
             adTimerInterval = setInterval(() => {
-                if(adsEnabled && !isAdPlaying && isPlaying) playAudioAd();
+                if(adsEnabled && !isAdPlaying && isPlaying) {
+                    console.log('⏰ Iniciando anúncio automático');
+                    playAudioAd();
+                }
             }, adInterval * 60 * 1000);
         }
         
-        function toggleAds() { adsEnabled = !adsEnabled; document.getElementById('toggleAdsBtn').innerHTML = adsEnabled ? 'Ativo' : 'Inativo'; }
-        function testAd() { playAudioAd(); }
-        function skipAd() { if(isAdPlaying) { adPlayer.pause(); finishAudioAd(); showNotification('⏭️ Anúncio pulado'); } }
+        function toggleAds() { 
+            adsEnabled = !adsEnabled; 
+            document.getElementById('toggleAdsBtn').innerHTML = adsEnabled ? 'Ativo' : 'Inativo';
+            showNotification(adsEnabled ? '📢 Anúncios ativados' : '🔇 Anúncios desativados');
+        }
+        
+        function testAd() { 
+            if(isPlaying) {
+                playAudioAd(); 
+            } else {
+                showNotification('⚠️ Toque uma música primeiro para testar anúncio');
+            }
+        }
+        
+        function skipAd() { 
+            if(isAdPlaying) { 
+                adPlayer.pause(); 
+                finishAudioAd(); 
+                showNotification('⏭️ Anúncio pulado'); 
+            } 
+        }
         
         function showNotification(msg, duration = 3000) {
             const n = document.getElementById('notification');
@@ -851,7 +907,7 @@
                 tapToStart.style.display = 'none';
             });
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
-            console.log('✅ Sistema inicializado - Vídeos alternam a cada 20 segundos');
+            console.log('✅ Sistema inicializado - Anúncios a cada 30 segundos para teste');
         });
     </script>
 </body>
