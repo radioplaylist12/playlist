@@ -61,6 +61,7 @@
             pointer-events: none;
         }
         
+        /* Ticker no topo - COM SOMBRA */
         .top-ticker {
             position: absolute;
             top: 0;
@@ -76,10 +77,12 @@
             width: 100%;
             overflow: hidden;
             white-space: nowrap;
-            background: transparent;
-            backdrop-filter: none;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(8px);
             border-radius: 30px;
-            padding: 6px 0;
+            padding: 8px 0;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5), 0 0 5px rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
         .ticker-text-top {
@@ -87,16 +90,17 @@
             padding-left: 100%;
             animation: ticker-scroll-top 20s linear infinite;
             color: #fff;
-            font-weight: 500;
-            font-size: 0.8rem;
+            font-weight: 600;
+            font-size: 0.85rem;
             letter-spacing: 0.5px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
         }
         
-        .ticker-text-top i { color: var(--primary-color); margin: 0 5px; }
+        .ticker-text-top i { color: var(--primary-color); margin: 0 5px; text-shadow: 0 0 5px var(--primary-color); }
         
         @keyframes ticker-scroll-top { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
         
+        /* Top bar com botões - SEM FUNDO */
         .top-bar {
             position: absolute;
             top: 50px;
@@ -109,24 +113,26 @@
         }
         
         .top-btn {
-            background: transparent;
-            backdrop-filter: none;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
             color: white;
-            border: none;
+            border: 1px solid rgba(255,255,255,0.2);
             font-size: 1.4rem;
             cursor: pointer;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
             border-radius: 50%;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         
-        .top-btn:active { transform: scale(0.9); color: var(--primary-color); }
+        .top-btn:active { transform: scale(0.9); background: var(--primary-color); color: white; }
         
+        /* Botão flutuante PEÇA AGORA! */
         .cta-button {
             position: absolute;
             bottom: 25%;
@@ -140,7 +146,7 @@
             font-weight: bold;
             cursor: pointer;
             z-index: 25;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4), 0 0 10px rgba(255,100,0,0.5);
             animation: pulse-cta 1.5s infinite;
             display: flex;
             align-items: center;
@@ -153,58 +159,62 @@
         .cta-button i { font-size: 0.8rem; }
         
         @keyframes pulse-cta {
-            0% { transform: scale(1); background: linear-gradient(135deg, #ff6600, #ff3300); }
-            50% { transform: scale(1.03); background: linear-gradient(135deg, #ff8800, #ff5500); }
-            100% { transform: scale(1); background: linear-gradient(135deg, #ff6600, #ff3300); }
+            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+            50% { transform: scale(1.03); box-shadow: 0 6px 20px rgba(255,100,0,0.6); }
+            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
         }
         
         .cta-button:active { transform: scale(0.95); }
         
+        /* Card do player - TOTALMENTE TRANSPARENTE */
         .player-card {
             position: absolute;
             bottom: 8%;
             left: 0;
             right: 0;
             margin: 0 20px;
-            background: transparent !important;
-            backdrop-filter: none !important;
-            border-radius: 0 !important;
-            padding: 6px 10px;
+            background: rgba(0,0,0,0.4) !important;
+            backdrop-filter: blur(12px) !important;
+            border-radius: 20px !important;
+            padding: 10px 15px;
             z-index: 20;
-            border: none !important;
+            border: 1px solid rgba(255,255,255,0.15) !important;
             pointer-events: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
         
-        .track-info { text-align: center; margin-bottom: 3px; background: transparent; }
-        .track-info p { font-size: 0.75rem; font-weight: 400; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); background: transparent; }
+        .track-info { text-align: center; margin-bottom: 5px; background: transparent; }
+        .track-info p { font-size: 0.8rem; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 1; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); background: transparent; }
         
-        .progress-area { padding: 0 4px 3px; background: transparent; }
-        .progress-time { display: flex; justify-content: space-between; font-size: 0.55rem; color: var(--text-secondary); margin-bottom: 2px; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); background: transparent; }
-        .progress-bar { height: 2px; background: rgba(255,255,255,0.3); cursor: pointer; border-radius: 2px; background: transparent; }
-        .progress-fill { height: 100%; background: var(--primary-color); width: 0%; border-radius: 2px; }
+        .progress-area { padding: 0 4px 5px; background: transparent; }
+        .progress-time { display: flex; justify-content: space-between; font-size: 0.6rem; color: var(--text-secondary); margin-bottom: 4px; text-shadow: 1px 1px 1px rgba(0,0,0,0.8); background: transparent; }
+        .progress-bar { height: 3px; background: rgba(255,255,255,0.3); cursor: pointer; border-radius: 3px; }
+        .progress-fill { height: 100%; background: var(--primary-color); width: 0%; border-radius: 3px; box-shadow: 0 0 5px var(--primary-color); }
         
         .controls {
             display: flex;
             align-items: center;
             justify-content: space-evenly;
-            padding: 2px 6px;
+            padding: 5px 6px;
             background: transparent;
         }
         
         .control-btn {
-            background: transparent !important;
-            border: none !important;
+            background: rgba(0,0,0,0.5) !important;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.2) !important;
             color: #ffffff !important;
             font-size: 1rem;
-            width: 32px;
-            height: 32px;
+            width: 38px;
+            height: 38px;
             cursor: pointer;
             transition: all 0.2s;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            border-radius: 50%;
         }
         
-        .control-btn:active { transform: scale(0.9); color: var(--primary-color) !important; }
-        .play-btn { font-size: 1.3rem; width: 42px; height: 42px; background: transparent !important; color: #fff !important; }
+        .control-btn:active { transform: scale(0.9); background: var(--primary-color) !important; color: #000 !important; }
+        .play-btn { font-size: 1.4rem; width: 48px; height: 48px; background: var(--primary-color) !important; color: #000 !important; border: none !important; box-shadow: 0 0 10px rgba(0,0,0,0.3); }
         
         .footer {
             position: absolute;
@@ -214,18 +224,21 @@
             text-align: center;
             padding: 4px;
             font-size: 0.5rem;
-            color: rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.4);
             z-index: 20;
             pointer-events: none;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
         }
         
+        /* Drawer */
         .drawer {
             position: fixed;
             top: 0;
             left: 0;
             width: 280px;
             height: 100vh;
-            background: #0a0a0a;
+            background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(10px);
             transform: translateX(-100%);
             transition: transform 0.3s ease;
             z-index: 2000;
@@ -236,11 +249,11 @@
         .drawer.open { transform: translateX(0); }
         .drawer-header { display: flex; justify-content: flex-end; margin-bottom: 20px; }
         .close-drawer { background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
-        .drawer-item { background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 10px 12px; width: 100%; text-align: left; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; border-radius: 8px; font-size: 0.9rem; }
+        .drawer-item { background: rgba(255,255,255,0.1); border: 1px solid var(--border-color); color: var(--text-primary); padding: 10px 12px; width: 100%; text-align: left; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; border-radius: 8px; font-size: 0.9rem; }
         .mode-toggle-btn { background: var(--primary-color); color: #000; font-weight: bold; border: none; padding: 10px; border-radius: 40px; margin: 10px 0; width: 100%; cursor: pointer; font-size: 0.9rem; }
         .playlist-container { margin-top: 15px; max-height: 300px; overflow-y: auto; }
-        .playlist-item { display: flex; align-items: center; gap: 10px; padding: 8px; border: 1px solid var(--border-color); border-radius: 30px; margin-bottom: 8px; cursor: pointer; background: #111; }
-        .playlist-item.playing { border-color: var(--primary-color); background: #1a1a1a; }
+        .playlist-item { display: flex; align-items: center; gap: 10px; padding: 8px; border: 1px solid var(--border-color); border-radius: 30px; margin-bottom: 8px; cursor: pointer; background: rgba(17,17,17,0.8); backdrop-filter: blur(4px); }
+        .playlist-item.playing { border-color: var(--primary-color); background: rgba(26,26,26,0.9); box-shadow: 0 0 10px rgba(0,0,0,0.3); }
         .music-number { width: 28px; height: 28px; border-radius: 50%; background: var(--primary-color); color: #000; font-weight: bold; display: flex; align-items: center; justify-content: center; border: 1px solid #fff; font-size: 0.7rem; }
         .playlist-info { flex: 1; }
         .playlist-title { font-size: 0.8rem; color: var(--text-primary); font-weight: 600; }
@@ -260,27 +273,27 @@
         .color-option.white { background: #ffffff; border: 1px solid #888; }
         .color-option.pure-black { background: #000000; border: 1px solid #888; }
         
-        .ad-panel { background: #111; border-radius: 8px; padding: 10px; margin: 15px 0; border: 1px solid var(--border-color); }
+        .ad-panel { background: rgba(17,17,17,0.8); backdrop-filter: blur(8px); border-radius: 12px; padding: 12px; margin: 15px 0; border: 1px solid var(--border-color); }
         .ad-panel h4, .ad-panel .ad-status, .ad-panel .ad-timer { color: #ffffff !important; font-size: 0.85rem; }
-        .ad-timer { font-size: 1.3rem; font-weight: bold; text-align: center; color: var(--primary-color) !important; }
+        .ad-timer { font-size: 1.3rem; font-weight: bold; text-align: center; color: var(--primary-color) !important; text-shadow: 0 0 5px var(--primary-color); }
         .ad-status { font-size: 0.7rem; text-align: center; margin-top: 5px; }
         .ad-buttons { display: flex; justify-content: center; gap: 8px; margin-top: 8px; }
-        .ad-btn { background: none; border: 1px solid var(--border-color); color: #ffffff !important; padding: 4px 10px; border-radius: 12px; cursor: pointer; font-size: 0.65rem; }
+        .ad-btn { background: rgba(255,255,255,0.1); border: 1px solid var(--border-color); color: #ffffff !important; padding: 4px 10px; border-radius: 12px; cursor: pointer; font-size: 0.65rem; }
         
-        .notification { position: fixed; bottom: 100px; left: 16px; right: 16px; background: #000; color: #fff; padding: 10px 16px; z-index: 3000; transform: translateY(100px); transition: transform 0.3s; border-left: 3px solid var(--primary-color); border-radius: 10px; text-align: center; font-size: 0.85rem; }
+        .notification { position: fixed; bottom: 100px; left: 16px; right: 16px; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); color: #fff; padding: 12px 20px; z-index: 3000; transform: translateY(100px); transition: transform 0.3s; border-left: 3px solid var(--primary-color); border-radius: 12px; text-align: center; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .notification.show { transform: translateY(0); }
         
-        .feedback-btn { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); color: #ffffff !important; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; z-index: 2000; pointer-events: auto; }
+        .feedback-btn { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); color: #ffffff !important; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; z-index: 2000; pointer-events: auto; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         
-        .feedback-modal { position: fixed; bottom: 80px; right: 20px; width: 260px; background: #1a1a1a; border: 1px solid var(--primary-color); border-radius: 12px; padding: 12px; z-index: 2001; display: none; }
+        .feedback-modal { position: fixed; bottom: 80px; right: 20px; width: 260px; background: rgba(26,26,26,0.95); backdrop-filter: blur(12px); border: 1px solid var(--primary-color); border-radius: 16px; padding: 15px; z-index: 2001; display: none; box-shadow: 0 5px 25px rgba(0,0,0,0.5); }
         .feedback-modal.open { display: block; }
         .feedback-modal h3 { color: #ffffff !important; font-size: 1rem; margin-bottom: 8px; }
         .rating { display: flex; gap: 6px; margin: 8px 0; justify-content: center; }
         .star { color: #555; font-size: 1.3rem; cursor: pointer; }
-        .star.active, .star.fas { color: #ffd700; }
-        .feedback-modal textarea { width: 100%; height: 60px; background: #2a2a2a; border: 1px solid #444; border-radius: 8px; padding: 8px; color: #ffffff !important; margin-bottom: 8px; resize: none; font-size: 0.8rem; }
+        .star.active, .star.fas { color: #ffd700; text-shadow: 0 0 5px #ffd700; }
+        .feedback-modal textarea { width: 100%; height: 60px; background: rgba(42,42,42,0.8); border: 1px solid #444; border-radius: 8px; padding: 8px; color: #ffffff !important; margin-bottom: 8px; resize: none; font-size: 0.8rem; }
         .feedback-modal textarea::placeholder { color: #aaa; }
-        .modal-btn { padding: 6px 10px; border-radius: 20px; cursor: pointer; background: #333; color: white; border: none; margin: 2px; font-size: 0.75rem; }
+        .modal-btn { padding: 6px 12px; border-radius: 20px; cursor: pointer; background: #333; color: white; border: none; margin: 2px; font-size: 0.75rem; }
         .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
         .modal-btn.cancel { background: #555; color: white; }
         
@@ -307,16 +320,17 @@
             position: fixed;
             top: 60px;
             left: 12px;
-            background: transparent;
-            backdrop-filter: none;
-            padding: 2px 6px;
-            border-radius: 12px;
-            font-size: 0.6rem;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
             color: rgba(255,255,255,0.9);
             z-index: 2000;
             pointer-events: none;
             white-space: nowrap;
             text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.2);
         }
         
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s ease; }
@@ -343,8 +357,9 @@
             animation: btnPulse 1.5s infinite;
             white-space: nowrap;
             pointer-events: auto;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
-        @keyframes btnPulse { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.02); } 100% { transform: translateX(-50%) scale(1); } }
+        @keyframes btnPulse { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05); } 100% { transform: translateX(-50%) scale(1); } }
         
         .video-indicator { display: none; }
         .ad-wait-message { display: none; }
@@ -352,7 +367,7 @@
 </head>
 <body class="theme-red">
     <div class="offline-status" id="offlineStatus"><i class="fas fa-wifi"></i> <span id="offlineStatusText">Online</span></div>
-    <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>RaTv Playlist</h1><p id="splashStatus">Carregando...</p></div></div>
+    <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>MUTV Playlist</h1><p id="splashStatus">Carregando...</p></div></div>
     <div id="tap-to-start"><i class="fas fa-play"></i> TOCAR MÚSICA AGORA</div>
     <div class="audio-status-badge" id="audioStatusBadge"><i class="fas fa-microphone-alt"></i> Áudio: Aguardando...</div>
     
@@ -395,7 +410,7 @@
                 </div>
             </div>
             
-            <div class="footer">MUTV - Playlist 2023 • Róger Mendes</div>
+            <div class="footer">MUTV - Playlist 2025 • Róger Mendes</div>
         </div>
     </div>
     
@@ -456,37 +471,64 @@
     </div>
     
     <script>
-        // ==================== CONFIGURAÇÃO PARA ÁUDIO EM SEGUNDO PLANO ====================
+        // ==================== AUDIO CONTEXT API OTIMIZADA PARA TELA BLOQUEADA ====================
         let audioContext = null;
         let audioContextInitiated = false;
         let silentSource = null;
+        let mediaSourceNode = null;
+        let gainNode = null;
         
+        // Inicializa o AudioContext com som silencioso para manter a tela bloqueada ativa
         async function initAudioContext() {
-            if (audioContextInitiated) return true;
+            if (audioContextInitiated && audioContext && audioContext.state === 'running') return true;
             
             try {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                // Cria ou retoma o AudioContext
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                
+                // Cria um buffer de silêncio para manter o contexto ativo
                 const bufferSize = audioContext.sampleRate * 2;
                 const silentBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
                 const channelData = silentBuffer.getChannelData(0);
                 for (let i = 0; i < bufferSize; i++) channelData[i] = 0;
                 
+                // Para o nó antigo se existir
+                if (silentSource) {
+                    try { silentSource.stop(); } catch(e) {}
+                    try { silentSource.disconnect(); } catch(e) {}
+                }
+                
                 silentSource = audioContext.createBufferSource();
                 silentSource.buffer = silentBuffer;
                 silentSource.loop = true;
+                
+                // Conecta ao destino para manter o contexto ativo
                 silentSource.connect(audioContext.destination);
                 silentSource.start();
                 
+                // Conecta o player de música ao AudioContext para melhor controle
+                if (musicPlayer && !mediaSourceNode) {
+                    mediaSourceNode = audioContext.createMediaElementSource(musicPlayer);
+                    gainNode = audioContext.createGain();
+                    mediaSourceNode.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    gainNode.gain.value = 0.9;
+                }
+                
+                // Garante que o contexto esteja rodando
                 if (audioContext.state === 'suspended') {
                     await audioContext.resume();
                 }
                 
                 audioContextInitiated = true;
+                
                 const badge = document.getElementById('audioStatusBadge');
                 if (badge) {
                     badge.innerHTML = '<i class="fas fa-check-circle"></i> Áudio: Ativo (tela bloqueada OK)';
                 }
-                console.log('✅ Web Audio API inicializada - Playback em segundo plano ativado');
+                console.log('✅ AudioContext inicializado - Playback em segundo plano ativado');
                 return true;
             } catch (error) {
                 console.error('❌ Erro ao inicializar AudioContext:', error);
@@ -498,14 +540,29 @@
             }
         }
         
+        // Mantém o AudioContext ativo mesmo com tela bloqueada
         async function keepAudioContextAlive() {
-            if (audioContext && audioContext.state === 'suspended') {
-                await audioContext.resume();
-                console.log('🔄 AudioContext retomado após suspensão');
+            if (audioContext) {
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                    console.log('🔄 AudioContext retomado após suspensão');
+                }
+                // Reinicia o som silencioso se necessário
+                if (silentSource && !silentSource.buffer) {
+                    const bufferSize = audioContext.sampleRate * 2;
+                    const silentBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+                    const channelData = silentBuffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) channelData[i] = 0;
+                    silentSource.buffer = silentBuffer;
+                    silentSource.start();
+                }
             }
+            return audioContextInitiated;
         }
         
-        function setupVisibilityHandler() {
+        // Configura listeners para manter o áudio ativo
+        function setupBackgroundAudio() {
+            // Listener para quando a página fica visível/invisível
             document.addEventListener('visibilitychange', async () => {
                 if (!document.hidden && isPlaying && !isAdPlaying) {
                     setTimeout(async () => {
@@ -516,8 +573,21 @@
                 }
                 await keepAudioContextAlive();
             });
+            
+            // Listener para quando o dispositivo tenta suspender o áudio
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.setActionHandler('play', async () => {
+                    await playMusicWithAudioContext();
+                });
+                navigator.mediaSession.setActionHandler('pause', () => {
+                    pauseMusic();
+                });
+                navigator.mediaSession.setActionHandler('previoustrack', () => prevTrack());
+                navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack());
+            }
         }
         
+        // Verificação periódica para manter o áudio ativo
         function preventAudioSuspension() {
             setInterval(async () => {
                 if (isPlaying && audioContext) {
@@ -527,7 +597,7 @@
                         await playMusicWithAudioContext();
                     }
                 }
-            }, 15000);
+            }, 10000);
         }
         
         // ==================== VÍDEOS ====================
@@ -611,7 +681,6 @@
         musicPlayer.volume = 0.9;
         adPlayer.volume = 0.9;
         
-        // Função para formatar tempo
         function formatTime(seconds) {
             if (isNaN(seconds)) return "0:00";
             const mins = Math.floor(seconds / 60);
@@ -619,22 +688,16 @@
             return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
         
-        // Função para atualizar o display da duração da música atual
         function updateTrackDuration() {
             if (musicPlayer.duration && !isNaN(musicPlayer.duration)) {
                 totalTimeEl.textContent = formatTime(musicPlayer.duration);
-            } else {
-                // Se a duração ainda não está disponível, tenta novamente em 500ms
-                setTimeout(() => {
-                    if (musicPlayer.duration && !isNaN(musicPlayer.duration)) {
-                        totalTimeEl.textContent = formatTime(musicPlayer.duration);
-                    }
-                }, 500);
             }
         }
         
         async function playMusicWithAudioContext() {
+            // Inicializa o AudioContext primeiro
             await initAudioContext();
+            
             if(isAdPlaying) {
                 showNotification('Aguarde o anúncio terminar');
                 return;
@@ -646,14 +709,12 @@
                 return;
             }
             
-            // Para qualquer áudio anterior
             musicPlayer.pause();
             musicPlayer.currentTime = 0;
-            
             musicPlayer.src = track.src;
             musicPlayer.load();
             
-            // Remove event listeners antigos para evitar duplicação
+            // Remove event listeners antigos
             musicPlayer.oncanplaythrough = null;
             musicPlayer.onended = null;
             musicPlayer.onerror = null;
@@ -671,6 +732,15 @@
                     tapToStart.style.display = 'none';
                     renderPlaylist();
                     await keepAudioContextAlive();
+                    
+                    // Atualiza MediaSession
+                    if ('mediaSession' in navigator) {
+                        navigator.mediaSession.metadata = new MediaMetadata({
+                            title: track.title,
+                            artist: track.artist,
+                            album: 'MUTV Playlist'
+                        });
+                    }
                 } catch (error) {
                     console.error('Erro ao reproduzir:', error);
                     showNotification('⚠️ Toque no botão play novamente');
@@ -679,50 +749,36 @@
                 }
             };
             
-            // Quando a música termina, vai para a próxima e reinicia a playlist se necessário
             musicPlayer.onended = () => {
                 console.log('Música terminou, indo para a próxima');
                 stopTimer();
                 
-                // Encontra o índice atual na playlist filtrada
                 let currentFilteredIndex = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
-                
-                if (currentFilteredIndex === -1) {
-                    // Se não encontrar, usa 0
-                    currentFilteredIndex = 0;
-                }
+                if (currentFilteredIndex === -1) currentFilteredIndex = 0;
                 
                 let nextFilteredIndex;
                 if (shuffle && filteredPlaylist.length > 1) {
-                    // Aleatório: escolhe uma música diferente da atual
                     do {
                         nextFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length);
                     } while (nextFilteredIndex === currentFilteredIndex);
                 } else {
-                    // Sequencial: vai para a próxima ou volta para o início
                     nextFilteredIndex = (currentFilteredIndex + 1) % filteredPlaylist.length;
                 }
                 
-                // Encontra o índice global da próxima música
                 const nextGlobalIndex = musicas.findIndex(m => m.id === filteredPlaylist[nextFilteredIndex].id);
-                
                 if (nextGlobalIndex !== -1) {
                     currentIndex = nextGlobalIndex;
                     loadTrack(currentIndex);
-                    // Toca automaticamente a próxima música
                     setTimeout(() => {
                         if (isPlaying && !isAdPlaying) {
                             playMusicWithAudioContext();
                         }
                     }, 100);
-                } else {
-                    console.error('Não foi possível encontrar a próxima música');
                 }
             };
             
             musicPlayer.onerror = () => { 
                 showNotification(`⚠️ Arquivo não encontrado: ${track.title}`);
-                // Tenta pular para a próxima música
                 setTimeout(() => {
                     if (!isAdPlaying) {
                         nextTrack();
@@ -730,7 +786,6 @@
                 }, 1000);
             };
             
-            // Atualiza o progresso em tempo real
             musicPlayer.ontimeupdate = () => {
                 if (musicPlayer.duration && !isNaN(musicPlayer.duration)) {
                     const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
@@ -802,8 +857,6 @@
                 totalTimeEl.textContent = '0:00';
                 progressFill.style.width = '0%';
                 renderPlaylist();
-                
-                // Tenta carregar a duração da música
                 musicPlayer.load();
                 musicPlayer.addEventListener('loadedmetadata', updateTrackDuration, { once: true });
             }
@@ -831,7 +884,6 @@
             if(isAdPlaying) return;
             stopTimer();
             
-            // Encontra o índice atual na playlist filtrada
             let currentFilteredIndex = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
             if(currentFilteredIndex === -1) currentFilteredIndex = 0;
             
@@ -981,7 +1033,6 @@
             localStorage.setItem('radioTheme', themeClass); 
         }
         
-        // Monitor de conectividade offline/online
         function setupOfflineDetection() {
             const offlineStatus = document.getElementById('offlineStatus');
             const offlineText = document.getElementById('offlineStatusText');
@@ -996,9 +1047,8 @@
                 } else {
                     offlineStatus.classList.add('offline');
                     offlineStatus.classList.remove('online');
-                    offlineText.innerHTML = '<i class="fas fa-plug"></i> Modo Offline - Algumas músicas podem não tocar';
+                    offlineText.innerHTML = '<i class="fas fa-plug"></i> Modo Offline';
                     offlineStatus.classList.add('show');
-                    showNotification('⚠️ Você está offline. Algumas músicas podem não estar disponíveis', 5000);
                 }
             }
             
@@ -1032,7 +1082,7 @@
         });
         document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
         document.getElementById('shareDrawerBtn').addEventListener('click', () => { 
-            if(navigator.share) navigator.share({title:'Rádio Playlist'}); 
+            if(navigator.share) navigator.share({title:'MUTV Playlist'}); 
             else { 
                 navigator.clipboard.writeText(location.href); 
                 showNotification('Link copiado!'); 
@@ -1061,7 +1111,7 @@
         });
         document.getElementById('sendFeedback').addEventListener('click', () => {
             if(currentRating === 0) { showNotification('⭐ Selecione uma nota'); return; }
-            let msg = `🎵 *Rádio Playlist*\n⭐ Nota: ${'★'.repeat(currentRating)}${'☆'.repeat(5-currentRating)}\n`;
+            let msg = `🎵 *MUTV Playlist*\n⭐ Nota: ${'★'.repeat(currentRating)}${'☆'.repeat(5-currentRating)}\n`;
             if(document.getElementById('feedbackText').value.trim()) msg += `💬 ${document.getElementById('feedbackText').value.trim()}\n`;
             window.open(`https://wa.me/5512988461978?text=${encodeURIComponent(msg)}`, '_blank');
             showNotification('✅ WhatsApp aberto!');
@@ -1082,7 +1132,6 @@
             });
             
             updateFilteredPlaylist();
-            // Escolhe uma música aleatória da playlist filtrada para iniciar
             const randomIndex = Math.floor(Math.random() * filteredPlaylist.length);
             const randomGlobalIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomIndex].id);
             currentIndex = randomGlobalIndex !== -1 ? randomGlobalIndex : 0;
@@ -1108,12 +1157,13 @@
                 if(!allSongsMode) updateFilteredPlaylist(); 
             }, 60000);
             
-            setupVisibilityHandler();
+            setupBackgroundAudio();
             preventAudioSuspension();
             setupOfflineDetection();
             
-            console.log('✅ Sistema inicializado - Áudio toca com tela bloqueada!');
-            console.log('✅ Playlist reinicia automaticamente ao final');
+            console.log('✅ MUTV Playlist inicializada');
+            console.log('✅ AudioContext ativado - Toca com tela bloqueada');
+            console.log('✅ Playlist reinicia automaticamente');
         });
     </script>
 </body>
