@@ -21,217 +21,38 @@
         body.theme-pure-black { --primary-color: #000000; --primary-dark: #000000; }
         body { --primary-color: #e63946; --primary-dark: #b71c1c; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; }
         
-        .app { 
-            width: 100%; 
-            height: 100vh; 
-            background: #000000; 
-            position: relative; 
-            overflow: hidden;
-        }
+        .app { width: 100%; height: 100vh; background: #000000; position: relative; overflow: hidden; }
+        .fullscreen-video-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1; }
+        .fullscreen-video-container video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+        .controls-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
         
-        .fullscreen-video-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            z-index: 1;
-        }
-        
-        .fullscreen-video-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        
-        .controls-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            pointer-events: none;
-        }
-        
-        .top-ticker {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: transparent;
-            padding: 12px 12px 20px 12px;
-            z-index: 15;
-            pointer-events: none;
-        }
-        
-        .ticker-container-top {
-            width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(8px);
-            border-radius: 30px;
-            padding: 8px 0;
-            box-shadow: 0 0 15px rgba(0,0,0,0.6), 0 0 8px rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.15);
-        }
-        
-        .ticker-text-top {
-            display: inline-block;
-            padding-left: 100%;
-            animation: ticker-scroll-top 20s linear infinite;
-            color: #fff;
-            font-weight: 600;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.7);
-        }
-        
+        .top-ticker { position: absolute; top: 0; left: 0; right: 0; background: transparent; padding: 12px 12px 20px 12px; z-index: 15; pointer-events: none; }
+        .ticker-container-top { width: 100%; overflow: hidden; white-space: nowrap; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); border-radius: 30px; padding: 8px 0; box-shadow: 0 0 15px rgba(0,0,0,0.6), 0 0 8px rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.15); }
+        .ticker-text-top { display: inline-block; padding-left: 100%; animation: ticker-scroll-top 20s linear infinite; color: #fff; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.5px; text-shadow: 2px 2px 5px rgba(0,0,0,0.9); }
         .ticker-text-top i { color: var(--primary-color); margin: 0 5px; text-shadow: 0 0 5px var(--primary-color); }
-        
         @keyframes ticker-scroll-top { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
         
-        .top-bar {
-            position: absolute;
-            top: 50px;
-            right: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 20;
-            pointer-events: auto;
-        }
-        
-        .top-btn {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(8px);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.2);
-            font-size: 1.4rem;
-            cursor: pointer;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            border-radius: 50%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        
+        .top-bar { position: absolute; top: 50px; right: 12px; display: flex; flex-direction: column; gap: 10px; z-index: 20; pointer-events: auto; }
+        .top-btn { background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); color: white; border: 1px solid rgba(255,255,255,0.2); font-size: 1.4rem; cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         .top-btn:active { transform: scale(0.9); background: var(--primary-color); }
         
-        .cta-button {
-            position: absolute;
-            bottom: 25%;
-            right: 15px;
-            background: linear-gradient(135deg, #ff6600, #ff3300);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 8px 16px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 25;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            animation: pulse-cta 1.5s infinite;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-            pointer-events: auto;
-        }
+        .cta-button { position: absolute; bottom: 25%; right: 15px; background: linear-gradient(135deg, #ff6600, #ff3300); color: white; border: none; border-radius: 50px; padding: 8px 16px; font-size: 0.8rem; font-weight: bold; cursor: pointer; z-index: 25; box-shadow: 0 4px 15px rgba(0,0,0,0.4); animation: pulse-cta 1.5s infinite; display: flex; align-items: center; gap: 6px; pointer-events: auto; }
+        @keyframes pulse-cta { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
         
-        @keyframes pulse-cta {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-            100% { transform: scale(1); }
-        }
-        
-        .player-card {
-            position: absolute;
-            bottom: 8%;
-            left: 0;
-            right: 0;
-            margin: 0 20px;
-            background: rgba(0,0,0,0.5) !important;
-            backdrop-filter: blur(12px) !important;
-            border-radius: 20px !important;
-            padding: 10px 15px;
-            z-index: 20;
-            border: 1px solid rgba(255,255,255,0.15) !important;
-            pointer-events: auto;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-        }
-        
+        .player-card { position: absolute; bottom: 8%; left: 0; right: 0; margin: 0 20px; background: rgba(0,0,0,0.6) !important; backdrop-filter: blur(12px) !important; border-radius: 20px !important; padding: 10px 15px; z-index: 20; border: 1px solid rgba(255,255,255,0.15) !important; pointer-events: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         .track-info { text-align: center; margin-bottom: 5px; }
         .track-info p { font-size: 0.8rem; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
-        
         .progress-area { padding: 0 4px 5px; }
         .progress-time { display: flex; justify-content: space-between; font-size: 0.6rem; color: #ccc; margin-bottom: 4px; text-shadow: 1px 1px 1px rgba(0,0,0,0.8); }
         .progress-bar { height: 3px; background: rgba(255,255,255,0.3); cursor: pointer; border-radius: 3px; }
         .progress-fill { height: 100%; background: var(--primary-color); width: 0%; border-radius: 3px; box-shadow: 0 0 5px var(--primary-color); }
-        
-        .controls {
-            display: flex;
-            align-items: center;
-            justify-content: space-evenly;
-            padding: 5px 6px;
-        }
-        
-        .control-btn {
-            background: rgba(0,0,0,0.5) !important;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.2) !important;
-            color: #fff !important;
-            font-size: 1rem;
-            width: 38px;
-            height: 38px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-radius: 50%;
-        }
-        
+        .controls { display: flex; align-items: center; justify-content: space-evenly; padding: 5px 6px; }
+        .control-btn { background: rgba(0,0,0,0.5) !important; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2) !important; color: #fff !important; font-size: 1rem; width: 38px; height: 38px; cursor: pointer; border-radius: 50%; }
         .control-btn:active { transform: scale(0.9); background: var(--primary-color) !important; color: #000 !important; }
         .play-btn { font-size: 1.4rem; width: 48px; height: 48px; background: var(--primary-color) !important; color: #000 !important; border: none !important; }
+        .footer { position: absolute; bottom: 5px; left: 0; right: 0; text-align: center; padding: 4px; font-size: 0.5rem; color: rgba(255,255,255,0.4); z-index: 20; pointer-events: none; }
         
-        .footer {
-            position: absolute;
-            bottom: 5px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            padding: 4px;
-            font-size: 0.5rem;
-            color: rgba(255,255,255,0.4);
-            z-index: 20;
-            pointer-events: none;
-        }
-        
-        .drawer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
-            height: 100vh;
-            background: rgba(10,10,10,0.95);
-            backdrop-filter: blur(10px);
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-            z-index: 2000;
-            padding: 20px;
-            overflow-y: auto;
-            border-right: 1px solid #333;
-        }
+        .drawer { position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: rgba(10,10,10,0.95); backdrop-filter: blur(10px); transform: translateX(-100%); transition: transform 0.3s; z-index: 2000; padding: 20px; overflow-y: auto; border-right: 1px solid #333; }
         .drawer.open { transform: translateX(0); }
         .drawer-header { display: flex; justify-content: flex-end; margin-bottom: 20px; }
         .close-drawer { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
@@ -270,7 +91,6 @@
         .notification.show { transform: translateY(0); }
         
         .feedback-btn { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); color: #fff; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; z-index: 2000; border: 1px solid rgba(255,255,255,0.2); }
-        
         .feedback-modal { position: fixed; bottom: 80px; right: 20px; width: 260px; background: rgba(26,26,26,0.95); backdrop-filter: blur(12px); border: 1px solid var(--primary-color); border-radius: 16px; padding: 15px; z-index: 2001; display: none; }
         .feedback-modal.open { display: block; }
         .feedback-modal h3 { color: #fff; margin-bottom: 8px; }
@@ -281,38 +101,12 @@
         .modal-btn { padding: 6px 12px; border-radius: 20px; cursor: pointer; background: #333; color: white; border: none; margin: 2px; }
         .modal-btn.send { background: #25D366; color: #000; font-weight: bold; }
         
-        .offline-status {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: #ff9800;
-            color: #000;
-            text-align: center;
-            padding: 4px;
-            font-size: 0.7rem;
-            z-index: 10001;
-            transform: translateY(-100%);
-            transition: transform 0.3s;
-        }
+        .offline-status { position: fixed; top: 0; left: 0; right: 0; background: #ff9800; color: #000; text-align: center; padding: 4px; font-size: 0.7rem; z-index: 10001; transform: translateY(-100%); transition: transform 0.3s; }
         .offline-status.show { transform: translateY(0); }
         .offline-status.online { background: #4caf50; color: white; }
         .offline-status.offline { background: #f44336; color: white; }
         
-        .audio-status-badge {
-            position: fixed;
-            top: 60px;
-            left: 12px;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(8px);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            color: #fff;
-            z-index: 2000;
-            pointer-events: none;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
+        .audio-status-badge { position: fixed; top: 60px; left: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #fff; z-index: 2000; pointer-events: none; border: 1px solid rgba(255,255,255,0.2); }
         
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s; }
         #splash.hidden { opacity: 0; pointer-events: none; }
@@ -320,33 +114,15 @@
         .splash-content i { font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.6; transform: scale(1); } }
         
-        #tap-to-start {
-            position: fixed;
-            bottom: 30%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: white;
-            padding: 14px 28px;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            z-index: 10000;
-            cursor: pointer;
-            display: none;
-            animation: btnPulse 1.5s infinite;
-            white-space: nowrap;
-            pointer-events: auto;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
+        #tap-to-start { position: fixed; bottom: 30%; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #ff6600, #ff3300); color: white; padding: 14px 28px; border-radius: 50px; font-weight: bold; font-size: 1.1rem; z-index: 10000; cursor: pointer; display: none; animation: btnPulse 1.5s infinite; white-space: nowrap; pointer-events: auto; box-shadow: 0 0 20px rgba(0,0,0,0.5); border: none; }
         @keyframes btnPulse { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05); } 100% { transform: translateX(-50%) scale(1); } }
     </style>
 </head>
 <body class="theme-red">
     <div class="offline-status" id="offlineStatus"><i class="fas fa-wifi"></i> <span id="offlineStatusText">Online</span></div>
-    <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>MUTV Playlist</h1><p id="splashStatus">Clique no botão para ativar áudio</p></div></div>
-    <div id="tap-to-start"><i class="fas fa-play-circle"></i> 🔈 ATIVAR ÁUDIO PARA TELA BLOQUEADA</div>
-    <div class="audio-status-badge" id="audioStatusBadge"><i class="fas fa-microphone-alt"></i> Áudio: Aguardando ativação</div>
+    <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>MUTV Playlist</h1><p>Clique no botão para ativar áudio</p></div></div>
+    <div id="tap-to-start"><i class="fas fa-play-circle"></i> 🎵 ATIVAR ÁUDIO (Toca com tela bloqueada)</div>
+    <div class="audio-status-badge" id="audioStatusBadge"><i class="fas fa-microphone-alt"></i> Aguardando ativação</div>
     
     <div class="app">
         <div class="fullscreen-video-container">
@@ -446,54 +222,77 @@
     </div>
     
     <script>
-        // ==================== CONFIGURAÇÃO PARA TOCAR COM TELA BLOQUEADA ====================
+        // ==================== CONFIGURAÇÃO PARA TOCAR EM SEGUNDO PLANO ====================
         let audioContext = null;
         let audioInitialized = false;
         let silentSource = null;
+        let mediaSourceConnected = false;
+        let keepAliveInterval = null;
         
-        // FUNÇÃO CRÍTICA: Inicia o AudioContext com som silencioso APÓS clique do usuário
+        // Inicia o AudioContext com som silencioso (só funciona após clique do usuário)
         async function initBackgroundAudio() {
-            if (audioInitialized) return true;
+            if (audioInitialized && audioContext && audioContext.state === 'running') {
+                return true;
+            }
             
             try {
-                // Cria o AudioContext
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                // Cria o AudioContext se não existir
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
                 
                 // Cria buffer de silêncio para manter o contexto ativo
                 const sampleRate = audioContext.sampleRate;
-                const bufferLength = sampleRate * 2; // 2 segundos de silêncio
+                const bufferLength = sampleRate * 4; // 4 segundos de silêncio
                 const silentBuffer = audioContext.createBuffer(1, bufferLength, sampleRate);
                 const channelData = silentBuffer.getChannelData(0);
                 for (let i = 0; i < bufferLength; i++) channelData[i] = 0;
                 
-                // Cria fonte de som silencioso que toca em loop
+                // Para o nó antigo se existir
+                if (silentSource) {
+                    try { silentSource.stop(); } catch(e) {}
+                    try { silentSource.disconnect(); } catch(e) {}
+                }
+                
+                // Cria nova fonte de silêncio
                 silentSource = audioContext.createBufferSource();
                 silentSource.buffer = silentBuffer;
                 silentSource.loop = true;
                 silentSource.connect(audioContext.destination);
                 silentSource.start();
                 
-                // Conecta o player de música ao AudioContext
-                const musicTrack = musicPlayer;
-                if (musicTrack && !musicTrack._connected) {
-                    const source = audioContext.createMediaElementSource(musicTrack);
-                    const gain = audioContext.createGain();
-                    source.connect(gain);
-                    gain.connect(audioContext.destination);
-                    gain.gain.value = 0.9;
-                    musicTrack._connected = true;
-                    musicTrack._gainNode = gain;
+                // Conecta o player de música ao AudioContext (apenas uma vez)
+                if (!mediaSourceConnected && musicPlayer) {
+                    try {
+                        // Remove conexão antiga se existir
+                        if (musicPlayer._mediaSource) {
+                            try { musicPlayer._mediaSource.disconnect(); } catch(e) {}
+                        }
+                        const source = audioContext.createMediaElementSource(musicPlayer);
+                        const gain = audioContext.createGain();
+                        source.connect(gain);
+                        gain.connect(audioContext.destination);
+                        gain.gain.value = 0.9;
+                        musicPlayer._mediaSource = source;
+                        musicPlayer._gainNode = gain;
+                        mediaSourceConnected = true;
+                        console.log('✅ MusicPlayer conectado ao AudioContext');
+                    } catch(e) {
+                        console.log('MediaElementSource já conectado ou erro:', e);
+                        mediaSourceConnected = true;
+                    }
                 }
                 
                 // Conecta o player de anúncios
-                const adTrack = adPlayer;
-                if (adTrack && !adTrack._connected) {
-                    const source = audioContext.createMediaElementSource(adTrack);
-                    const gain = audioContext.createGain();
-                    source.connect(gain);
-                    gain.connect(audioContext.destination);
-                    gain.gain.value = 0.9;
-                    adTrack._connected = true;
+                if (adPlayer && !adPlayer._connected) {
+                    try {
+                        const source = audioContext.createMediaElementSource(adPlayer);
+                        const gain = audioContext.createGain();
+                        source.connect(gain);
+                        gain.connect(audioContext.destination);
+                        gain.gain.value = 0.9;
+                        adPlayer._connected = true;
+                    } catch(e) {}
                 }
                 
                 // Garante que o contexto está rodando
@@ -506,35 +305,59 @@
                 // Atualiza badge
                 const badge = document.getElementById('audioStatusBadge');
                 if (badge) {
-                    badge.innerHTML = '<i class="fas fa-check-circle"></i> ✅ Áudio ativado! Toca com tela bloqueada';
+                    badge.innerHTML = '<i class="fas fa-check-circle"></i> ✅ Áudio ativado! Toca em segundo plano';
                     badge.style.background = 'rgba(76, 175, 80, 0.8)';
                 }
                 
-                console.log('✅ AudioContext ativado! Agora toca com tela bloqueada/desligada');
+                console.log('✅ AudioContext ativado! Música vai tocar em segundo plano');
                 return true;
             } catch (error) {
                 console.error('❌ Erro ao ativar AudioContext:', error);
-                const badge = document.getElementById('audioStatusBadge');
-                if (badge) {
-                    badge.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Modo normal (sem segundo plano)';
-                }
                 return false;
             }
         }
         
-        // Mantém o contexto ativo periodicamente
-        function keepAudioAlive() {
-            if (audioContext && audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    console.log('🔄 AudioContext retomado');
-                });
-            }
+        // Mantém o AudioContext ativo e verifica se a música ainda está tocando
+        function startKeepAlive() {
+            if (keepAliveInterval) clearInterval(keepAliveInterval);
             
-            // Verifica se o player pausou sozinho e retoma
-            if (isPlaying && musicPlayer.paused && !isAdPlaying) {
-                console.log('🔄 Detectado pausa inesperada, retomando...');
-                musicPlayer.play().catch(e => console.log('Erro ao retomar:', e));
-            }
+            keepAliveInterval = setInterval(async () => {
+                // Mantém o AudioContext ativo
+                if (audioContext && audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                    console.log('🔄 AudioContext retomado');
+                }
+                
+                // Verifica se a música deveria estar tocando mas parou
+                if (isPlaying && !isAdPlaying) {
+                    if (musicPlayer.paused) {
+                        console.log('🔄 Música pausada inesperadamente, retomando...');
+                        try {
+                            await musicPlayer.play();
+                        } catch(e) {
+                            console.log('Erro ao retomar:', e);
+                            // Tenta reconectar
+                            await initBackgroundAudio();
+                            try {
+                                await musicPlayer.play();
+                            } catch(e2) {}
+                        }
+                    }
+                }
+                
+                // Reinicia o som silencioso se necessário
+                if (audioContext && silentSource && (!silentSource.buffer || silentSource.playbackState === 'ended')) {
+                    try {
+                        const sampleRate = audioContext.sampleRate;
+                        const bufferLength = sampleRate * 4;
+                        const silentBuffer = audioContext.createBuffer(1, bufferLength, sampleRate);
+                        const channelData = silentBuffer.getChannelData(0);
+                        for (let i = 0; i < bufferLength; i++) channelData[i] = 0;
+                        silentSource.buffer = silentBuffer;
+                        silentSource.start();
+                    } catch(e) {}
+                }
+            }, 5000);
         }
         
         // ==================== VÍDEOS ====================
@@ -558,7 +381,6 @@
                 videoElement.src = video.src;
                 videoElement.load();
                 videoElement.play().catch(e => console.log('Erro ao tocar vídeo:', e));
-                
                 if (ctaButton && video.link) {
                     ctaButton.onclick = () => window.open(video.link, '_blank');
                 }
@@ -623,9 +445,8 @@
             return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
         
-        // FUNÇÃO PRINCIPAL: Tocar música COM suporte a tela bloqueada
+        // FUNÇÃO PRINCIPAL: Tocar música COM suporte contínuo a segundo plano
         async function playMusic() {
-            // Se o AudioContext ainda não foi ativado, mostra aviso
             if (!audioInitialized) {
                 showNotification('⚠️ Clique no botão "ATIVAR ÁUDIO" primeiro!', 4000);
                 return false;
@@ -642,103 +463,116 @@
                 return false;
             }
             
+            // Salva o estado atual
+            const wasPlaying = isPlaying;
+            
+            // Para a música atual
             musicPlayer.pause();
-            musicPlayer.currentTime = 0;
+            
+            // Troca a fonte
             musicPlayer.src = track.src;
             musicPlayer.load();
             
-            musicPlayer.oncanplaythrough = async () => {
-                try {
-                    // Garante que o AudioContext está ativo
-                    if (audioContext && audioContext.state === 'suspended') {
-                        await audioContext.resume();
-                    }
-                    
-                    await musicPlayer.play();
-                    isPlaying = true;
-                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    startTimer();
-                    
-                    if (musicPlayer.duration) {
-                        totalTimeEl.textContent = formatTime(musicPlayer.duration);
-                    } else {
-                        musicPlayer.addEventListener('loadedmetadata', () => {
-                            totalTimeEl.textContent = formatTime(musicPlayer.duration);
-                        }, { once: true });
-                    }
-                    
-                    splash.classList.add('hidden');
-                    setTimeout(() => splash.style.display = 'none', 500);
-                    tapToStart.style.display = 'none';
-                    renderPlaylist();
-                    
-                    // Atualiza MediaSession para controles na tela bloqueada
-                    if ('mediaSession' in navigator) {
-                        navigator.mediaSession.metadata = new MediaMetadata({
-                            title: track.title,
-                            artist: track.artist,
-                            album: 'MUTV Playlist'
-                        });
-                        navigator.mediaSession.setActionHandler('play', () => playMusic());
-                        navigator.mediaSession.setActionHandler('pause', () => pauseMusic());
-                        navigator.mediaSession.setActionHandler('previoustrack', () => prevTrack());
-                        navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack());
-                    }
-                    
-                    return true;
-                } catch (error) {
-                    console.error('Erro ao reproduzir:', error);
-                    showNotification('⚠️ Erro ao tocar música');
-                    isPlaying = false;
-                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    return false;
-                }
-            };
+            // Remove event listeners antigos para evitar duplicação
+            musicPlayer.oncanplaythrough = null;
+            musicPlayer.onended = null;
+            musicPlayer.onerror = null;
+            musicPlayer.ontimeupdate = null;
             
-            musicPlayer.onended = () => {
-                console.log('Música terminou, próxima...');
-                stopTimer();
-                
-                let currentFilteredIndex = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
-                if (currentFilteredIndex === -1) currentFilteredIndex = 0;
-                
-                let nextFilteredIndex;
-                if (shuffle && filteredPlaylist.length > 1) {
-                    do {
-                        nextFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length);
-                    } while (nextFilteredIndex === currentFilteredIndex);
-                } else {
-                    nextFilteredIndex = (currentFilteredIndex + 1) % filteredPlaylist.length;
-                }
-                
-                const nextGlobalIndex = musicas.findIndex(m => m.id === filteredPlaylist[nextFilteredIndex].id);
-                if (nextGlobalIndex !== -1) {
-                    currentIndex = nextGlobalIndex;
-                    loadTrack(currentIndex);
-                    setTimeout(() => {
-                        if (isPlaying && !isAdPlaying) {
-                            playMusic();
+            return new Promise((resolve) => {
+                musicPlayer.oncanplaythrough = async () => {
+                    try {
+                        // Garante que o AudioContext está ativo
+                        if (audioContext && audioContext.state === 'suspended') {
+                            await audioContext.resume();
                         }
-                    }, 100);
-                }
-            };
-            
-            musicPlayer.onerror = () => { 
-                showNotification(`⚠️ Arquivo não encontrado: ${track.title}`);
-                setTimeout(() => {
-                    if (!isAdPlaying) nextTrack();
-                }, 1000);
-            };
-            
-            musicPlayer.ontimeupdate = () => {
-                if (musicPlayer.duration && !isNaN(musicPlayer.duration)) {
-                    const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
-                    progressFill.style.width = percent + '%';
-                    currentTimeEl.textContent = formatTime(musicPlayer.currentTime);
-                }
-            };
-            
-            return true;
+                        
+                        await musicPlayer.play();
+                        isPlaying = true;
+                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        startTimer();
+                        
+                        if (musicPlayer.duration) {
+                            totalTimeEl.textContent = formatTime(musicPlayer.duration);
+                        } else {
+                            musicPlayer.addEventListener('loadedmetadata', () => {
+                                totalTimeEl.textContent = formatTime(musicPlayer.duration);
+                            }, { once: true });
+                        }
+                        
+                        splash.classList.add('hidden');
+                        setTimeout(() => splash.style.display = 'none', 500);
+                        tapToStart.style.display = 'none';
+                        renderPlaylist();
+                        
+                        // Atualiza MediaSession
+                        if ('mediaSession' in navigator) {
+                            navigator.mediaSession.metadata = new MediaMetadata({
+                                title: track.title,
+                                artist: track.artist,
+                                album: 'MUTV Playlist'
+                            });
+                            navigator.mediaSession.setActionHandler('play', () => playMusic());
+                            navigator.mediaSession.setActionHandler('pause', () => pauseMusic());
+                            navigator.mediaSession.setActionHandler('previoustrack', () => prevTrack());
+                            navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack());
+                        }
+                        
+                        resolve(true);
+                    } catch (error) {
+                        console.error('Erro ao reproduzir:', error);
+                        isPlaying = false;
+                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        resolve(false);
+                    }
+                };
+                
+                musicPlayer.onended = () => {
+                    console.log('🎵 Música terminou, carregando próxima...');
+                    stopTimer();
+                    
+                    // Encontra próxima música
+                    let currentFilteredIndex = filteredPlaylist.findIndex(m => m.id === musicas[currentIndex].id);
+                    if (currentFilteredIndex === -1) currentFilteredIndex = 0;
+                    
+                    let nextFilteredIndex;
+                    if (shuffle && filteredPlaylist.length > 1) {
+                        do {
+                            nextFilteredIndex = Math.floor(Math.random() * filteredPlaylist.length);
+                        } while (nextFilteredIndex === currentFilteredIndex);
+                    } else {
+                        nextFilteredIndex = (currentFilteredIndex + 1) % filteredPlaylist.length;
+                    }
+                    
+                    const nextGlobalIndex = musicas.findIndex(m => m.id === filteredPlaylist[nextFilteredIndex].id);
+                    if (nextGlobalIndex !== -1) {
+                        currentIndex = nextGlobalIndex;
+                        loadTrack(currentIndex);
+                        // Toca a próxima música após um pequeno delay
+                        setTimeout(async () => {
+                            if (!isAdPlaying) {
+                                await playMusic();
+                            }
+                        }, 100);
+                    }
+                };
+                
+                musicPlayer.onerror = () => { 
+                    showNotification(`⚠️ Arquivo não encontrado: ${track.title}`);
+                    setTimeout(() => {
+                        if (!isAdPlaying) nextTrack();
+                    }, 1000);
+                    resolve(false);
+                };
+                
+                musicPlayer.ontimeupdate = () => {
+                    if (musicPlayer.duration && !isNaN(musicPlayer.duration)) {
+                        const percent = (musicPlayer.currentTime / musicPlayer.duration) * 100;
+                        progressFill.style.width = percent + '%';
+                        currentTimeEl.textContent = formatTime(musicPlayer.currentTime);
+                    }
+                };
+            });
         }
         
         function pauseMusic() {
@@ -787,7 +621,6 @@
             currentIndex = index;
             const track = musicas[currentIndex];
             if (track) {
-                musicPlayer.src = track.src;
                 trackArtist.textContent = `${track.title} - ${track.artist}`;
                 currentTimeEl.textContent = '0:00';
                 totalTimeEl.textContent = '0:00';
@@ -974,7 +807,7 @@
         
         playBtn.addEventListener('click', () => {
             if (!audioInitialized) {
-                showNotification('⚠️ Primeiro clique no botão "ATIVAR ÁUDIO" na tela inicial!', 4000);
+                showNotification('⚠️ Primeiro clique no botão "ATIVAR ÁUDIO"!', 4000);
                 return;
             }
             togglePlayPause();
@@ -1034,24 +867,21 @@
             document.querySelectorAll('.star').forEach(s => { s.classList.remove('fas','active'); s.classList.add('far'); });
         });
         
-        // ==================== BOTÃO DE ATIVAÇÃO DE ÁUDIO (CRÍTICO) ====================
+        // ==================== BOTÃO DE ATIVAÇÃO ====================
         tapToStart.addEventListener('click', async (e) => {
             e.stopPropagation();
             
-            showNotification('🔊 Ativando áudio para tocar com tela bloqueada...', 3000);
+            showNotification('🔊 Ativando áudio para tocar em segundo plano...', 3000);
             
-            // Inicia o AudioContext (só funciona após clique do usuário)
             const success = await initBackgroundAudio();
             
             if (success) {
-                // Carrega uma música aleatória
                 updateFilteredPlaylist();
                 const randomIndex = Math.floor(Math.random() * filteredPlaylist.length);
                 const randomGlobalIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomIndex].id);
                 currentIndex = randomGlobalIndex !== -1 ? randomGlobalIndex : 0;
                 loadTrack(currentIndex);
                 
-                // Toca a música
                 await playMusic();
                 
                 showNotification('✅ Áudio ativado! Agora toca com tela bloqueada!', 4000);
@@ -1061,7 +891,7 @@
             }
         });
         
-        // Inicialização básica
+        // Inicialização
         window.addEventListener('load', () => {
             const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
             setTheme(savedTheme);
@@ -1073,7 +903,6 @@
             
             updateFilteredPlaylist();
             
-            // Pré-carrega a primeira música (sem tocar)
             const randomIndex = Math.floor(Math.random() * filteredPlaylist.length);
             const randomGlobalIndex = musicas.findIndex(m => m.id === filteredPlaylist[randomIndex].id);
             currentIndex = randomGlobalIndex !== -1 ? randomGlobalIndex : 0;
@@ -1087,13 +916,11 @@
                 ctaButton.onclick = () => window.open(videosList[0].link, '_blank');
             }
             
-            // Mostra o botão de ativação
             tapToStart.style.display = 'block';
             
-            // Mantém o áudio vivo a cada 10 segundos
-            setInterval(() => keepAudioAlive(), 10000);
+            // Inicia o keep-alive para manter o áudio em segundo plano
+            startKeepAlive();
             
-            // Atualiza playlist por período
             setInterval(() => { 
                 if(!allSongsMode) updateFilteredPlaylist(); 
             }, 60000);
