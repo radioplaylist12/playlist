@@ -77,7 +77,7 @@
             width: 100%;
             overflow: hidden;
             white-space: nowrap;
-            background: transparent; /* removido fundo escuro e blur */
+            background: transparent;
             backdrop-filter: none;
             border-radius: 30px;
             padding: 6px 0;
@@ -91,7 +91,7 @@
             font-weight: 500;
             font-size: 0.8rem;
             letter-spacing: 0.5px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.7); /* mantém legibilidade */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
         }
         
         .ticker-text-top i { color: var(--primary-color); margin: 0 5px; }
@@ -111,7 +111,7 @@
         }
         
         .top-btn {
-            background: transparent; /* removido fundo escuro e blur */
+            background: transparent;
             backdrop-filter: none;
             color: white;
             border: none;
@@ -129,7 +129,7 @@
         
         .top-btn:active { transform: scale(0.9); color: var(--primary-color); }
         
-        /* Botão flutuante PEÇA AGORA! */
+        /* Botão flutuante PEÇA AGORA! - DIMINUÍDO */
         .cta-button {
             position: absolute;
             bottom: 25%;
@@ -138,32 +138,32 @@
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 12px 20px;
-            font-size: 0.9rem;
+            padding: 8px 16px;  /* reduzido */
+            font-size: 0.8rem;   /* reduzido */
             font-weight: bold;
             cursor: pointer;
             z-index: 25;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             animation: pulse-cta 1.5s infinite;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             white-space: nowrap;
             font-family: inherit;
             pointer-events: auto;
         }
         
-        .cta-button i { font-size: 1rem; }
+        .cta-button i { font-size: 0.8rem; }
         
         @keyframes pulse-cta {
             0% { transform: scale(1); background: linear-gradient(135deg, #ff6600, #ff3300); }
-            50% { transform: scale(1.05); background: linear-gradient(135deg, #ff8800, #ff5500); }
+            50% { transform: scale(1.03); background: linear-gradient(135deg, #ff8800, #ff5500); }
             100% { transform: scale(1); background: linear-gradient(135deg, #ff6600, #ff3300); }
         }
         
         .cta-button:active { transform: scale(0.95); }
         
-        /* Card do player - SEM FUNDO PRETO E SEM BORDA LARANJA - TOTALMENTE TRANSPARENTE */
+        /* Card do player - TOTALMENTE TRANSPARENTE */
         .player-card {
             position: absolute;
             bottom: 8%;
@@ -308,21 +308,21 @@
         .offline-status.online { background: #4caf50; color: white; }
         .offline-status.offline { background: #f44336; color: white; }
         
-        /* BADGE DE ÁUDIO ATIVO - MOVIDO PARA CANTON SUPERIOR ESQUERDO */
+        /* BADGE DE ÁUDIO ATIVO - TOTALMENTE TRANSPARENTE (sem fundo preto) */
         .audio-status-badge {
             position: fixed;
-            top: 60px;           /* abaixo do ticker */
+            top: 60px;
             left: 12px;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(4px);
-            border-left: 2px solid var(--primary-color);
-            padding: 3px 8px;
+            background: transparent;  /* removido fundo escuro e blur */
+            backdrop-filter: none;
+            padding: 2px 6px;
             border-radius: 12px;
             font-size: 0.6rem;
             color: rgba(255,255,255,0.9);
             z-index: 2000;
             pointer-events: none;
             white-space: nowrap;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
         }
         
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s ease; }
@@ -471,10 +471,7 @@
             if (audioContextInitiated) return true;
             
             try {
-                // Criar AudioContext
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Criar buffer silencioso para manter o contexto ativo
                 const bufferSize = audioContext.sampleRate * 2;
                 const silentBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
                 const channelData = silentBuffer.getChannelData(0);
@@ -486,20 +483,15 @@
                 silentSource.connect(audioContext.destination);
                 silentSource.start();
                 
-                // Garantir que o contexto está rodando
                 if (audioContext.state === 'suspended') {
                     await audioContext.resume();
                 }
                 
                 audioContextInitiated = true;
-                
-                // Atualizar badge de status
                 const badge = document.getElementById('audioStatusBadge');
                 if (badge) {
                     badge.innerHTML = '<i class="fas fa-check-circle"></i> Áudio: Ativo (tela bloqueada OK)';
-                    badge.style.borderLeftColor = '#00ff88';
                 }
-                
                 console.log('✅ Web Audio API inicializada - Playback em segundo plano ativado');
                 return true;
             } catch (error) {
@@ -512,7 +504,6 @@
             }
         }
         
-        // Manter o contexto de áudio ativo quando a tela for bloqueada/desbloqueada
         async function keepAudioContextAlive() {
             if (audioContext && audioContext.state === 'suspended') {
                 await audioContext.resume();
@@ -520,11 +511,9 @@
             }
         }
         
-        // Monitorar visibilidade da página
         function setupVisibilityHandler() {
             document.addEventListener('visibilitychange', async () => {
                 if (!document.hidden && isPlaying && !isAdPlaying) {
-                    // Quando a tela for desbloqueada, garantir que a música continue
                     setTimeout(async () => {
                         if (musicPlayer.paused && isPlaying && !isAdPlaying) {
                             await playMusicWithAudioContext();
@@ -535,18 +524,16 @@
             });
         }
         
-        // Prevenir que o áudio seja suspenso pelo navegador
         function preventAudioSuspension() {
             setInterval(async () => {
                 if (isPlaying && audioContext) {
                     await keepAudioContextAlive();
-                    // Verificar se a música parou inesperadamente
                     if (musicPlayer.paused && isPlaying && !isAdPlaying) {
                         console.log('🔄 Detectado pausa inesperada, retomando...');
                         await playMusicWithAudioContext();
                     }
                 }
-            }, 15000); // Verificar a cada 15 segundos
+            }, 15000);
         }
         
         // ==================== VÍDEOS ====================
@@ -631,9 +618,7 @@
         adPlayer.volume = 0.9;
         
         async function playMusicWithAudioContext() {
-            // Inicializar AudioContext primeiro
             await initAudioContext();
-            
             if(isAdPlaying) {
                 showNotification('Aguarde o anúncio terminar');
                 return;
@@ -649,16 +634,11 @@
                     isPlaying = true;
                     playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                     startTimer();
-                    
-                    // Esconder splash e botão de start
                     splash.classList.add('hidden');
                     setTimeout(() => splash.style.display = 'none', 500);
                     tapToStart.style.display = 'none';
                     renderPlaylist();
-                    
-                    // Manter contexto de áudio ativo
                     await keepAudioContextAlive();
-                    
                 } catch (error) {
                     console.error('Erro ao reproduzir:', error);
                     showNotification('⚠️ Toque no botão play novamente');
@@ -992,7 +972,6 @@
                 if(!allSongsMode) updateFilteredPlaylist(); 
             }, 60000);
             
-            // Configurar handlers para áudio em segundo plano
             setupVisibilityHandler();
             preventAudioSuspension();
             
