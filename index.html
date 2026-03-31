@@ -202,7 +202,7 @@
         .splash-content i { font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.6; transform: scale(1); } }
         
-        /* Botão de ativação de áudio - estilo original (grande, centralizado, pulsante) */
+        /* Botão de ativação de áudio - estilo original */
         #tap-to-start {
             position: fixed;
             bottom: 30%;
@@ -617,7 +617,7 @@
         // ==================== INIT (USER TAP) ====================
         tapToStart.addEventListener('click', async (e) => {
             e.stopPropagation();
-            showNotification('🔊 Ativando áudio...', 1500);
+            // NOTIFICAÇÃO REMOVIDA: showNotification('🔊 Ativando áudio...', 1500);
             const ok = await initAudioContext();
             if(ok) {
                 startKeepAliveService();
