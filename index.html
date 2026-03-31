@@ -127,25 +127,59 @@
         
         .top-btn:active { transform: scale(0.9); color: var(--primary-color); }
         
-        /* Card do player - menor e mais compacto */
+        /* Botão flutuante "PEÇA AGORA!" */
+        .cta-button {
+            position: absolute;
+            bottom: 25%;
+            right: 15px;
+            background: linear-gradient(135deg, #ff6600, #ff3300);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 25;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            animation: pulse-cta 1.5s infinite;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+        
+        .cta-button i { font-size: 1rem; }
+        
+        @keyframes pulse-cta {
+            0% { transform: scale(1); background: linear-gradient(135deg, #ff6600, #ff3300); }
+            50% { transform: scale(1.05); background: linear-gradient(135deg, #ff8800, #ff5500); }
+            100% { transform: scale(1); background: linear-gradient(135deg, #ff6600, #ff3300); }
+        }
+        
+        .cta-button:active { transform: scale(0.95); }
+        
+        /* Card do player - mais fino e mais pra baixo */
         .player-card {
             position: absolute;
-            bottom: 15%;
+            bottom: 8%;
             left: 0;
             right: 0;
             margin: 0 20px;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(12px);
-            border-radius: 16px;
-            padding: 8px 12px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            padding: 6px 10px;
             z-index: 20;
+            border: none;
         }
         
-        .track-info { text-align: center; margin-bottom: 4px; }
-        .track-info p { font-size: 0.8rem; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .track-info { text-align: center; margin-bottom: 3px; }
+        .track-info p { font-size: 0.75rem; font-weight: 400; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; }
         
-        .progress-area { padding: 0 4px 4px; }
-        .progress-time { display: flex; justify-content: space-between; font-size: 0.6rem; color: var(--text-secondary); margin-bottom: 2px; }
+        .progress-area { padding: 0 4px 3px; }
+        .progress-time { display: flex; justify-content: space-between; font-size: 0.55rem; color: var(--text-secondary); margin-bottom: 2px; }
         .progress-bar { height: 2px; background: rgba(255,255,255,0.3); cursor: pointer; border-radius: 2px; }
         .progress-fill { height: 100%; background: var(--primary-color); width: 0%; border-radius: 2px; }
         
@@ -153,34 +187,34 @@
             display: flex;
             align-items: center;
             justify-content: space-evenly;
-            padding: 2px 8px;
+            padding: 2px 6px;
         }
         
         .control-btn {
             background: transparent;
             border: none;
             color: #ffffff !important;
-            font-size: 1.2rem;
-            width: 36px;
-            height: 36px;
+            font-size: 1rem;
+            width: 32px;
+            height: 32px;
             cursor: pointer;
             transition: all 0.2s;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
         
         .control-btn:active { transform: scale(0.9); color: var(--primary-color) !important; }
-        .play-btn { font-size: 1.6rem; width: 48px; height: 48px; }
+        .play-btn { font-size: 1.3rem; width: 42px; height: 42px; }
         
         /* Footer */
         .footer {
             position: absolute;
-            bottom: 8px;
+            bottom: 5px;
             left: 0;
             right: 0;
             text-align: center;
-            padding: 6px;
-            font-size: 0.55rem;
-            color: rgba(255,255,255,0.4);
+            padding: 4px;
+            font-size: 0.5rem;
+            color: rgba(255,255,255,0.3);
             z-index: 20;
         }
         
@@ -241,7 +275,6 @@
         .feedback-modal { position: fixed; bottom: 80px; right: 20px; width: 260px; background: #1a1a1a; border: 1px solid var(--primary-color); border-radius: 12px; padding: 12px; z-index: 2001; display: none; }
         .feedback-modal.open { display: block; }
         .feedback-modal h3 { color: #ffffff !important; font-size: 1rem; margin-bottom: 8px; }
-        .feedback-modal label { color: #ffffff !important; }
         .rating { display: flex; gap: 6px; margin: 8px 0; justify-content: center; }
         .star { color: #555; font-size: 1.3rem; cursor: pointer; }
         .star.active, .star.fas { color: #ffd700; }
@@ -310,22 +343,6 @@
             white-space: nowrap;
         }
         @keyframes btnPulse { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.02); } 100% { transform: translateX(-50%) scale(1); } }
-        
-        /* Indicador de vídeo atual */
-        .video-indicator {
-            position: absolute;
-            top: 55px;
-            left: 12px;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.65rem;
-            color: white;
-            z-index: 20;
-            border-left: 2px solid var(--primary-color);
-            pointer-events: none;
-        }
     </style>
 </head>
 <body class="theme-red">
@@ -342,12 +359,12 @@
             </video>
         </div>
         
-        <!-- Indicador de vídeo -->
-        <div class="video-indicator" id="videoIndicator">
-            <i class="fas fa-video"></i> <span id="currentVideoName">Vídeo 1</span>
-        </div>
+        <!-- Botão flutuante PEÇA AGORA! -->
+        <button class="cta-button" id="ctaButton">
+            <i class="fas fa-shopping-cart"></i> PEÇA AGORA!
+        </button>
         
-        <!-- Ticker no topo (único) -->
+        <!-- Ticker no topo -->
         <div class="top-ticker">
             <div class="ticker-container-top">
                 <div class="ticker-text-top" id="topTickerText">
@@ -364,7 +381,7 @@
                 <button class="top-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-h"></i></button>
             </div>
             
-            <!-- Player card com botões menores -->
+            <!-- Player card mais fino e mais pra baixo -->
             <div class="player-card">
                 <div class="track-info"><p id="trackArtist">🎵 Clique em "TOCAR MÚSICA"</p></div>
                 <div class="progress-area">
@@ -393,7 +410,6 @@
         <div class="drawer-header"><button class="close-drawer" id="closeDrawer"><i class="fas fa-times"></i></button></div>
         <div class="drawer-content">
             <button class="drawer-item" id="shareDrawerBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
-            <button class="drawer-item" id="toggleVideosBtn"><i class="fas fa-video"></i> Alternar Vídeos</button>
             <button class="mode-toggle-btn" id="toggleAllSongsBtn"><i class="fas fa-globe"></i> 🌎 Modo: TODAS as músicas</button>
             
             <div class="color-picker">
@@ -476,31 +492,44 @@
             } catch (error) { return false; }
         }
         
-        // Lista de vídeos para alternar
+        // Lista de vídeos para alternar automaticamente a cada 20 segundos
         const videosList = [
-            { src: "pri.mp4", nome: "Vídeo Principal" },
-            { src: "mutv.mp4", nome: "MUTV" },
-            { src: "aluguecopos (1).mp4", nome: "AlugueCopos" },
-            { src: "Gestão (1).mp4", nome: "Destaque" },
-            { src: "carro.mp4", nome: "Carro" }
+            { src: "pri.mp4", nome: "Vídeo Principal", link: "https://wa.me/5512988461978" },
+            { src: "mutv.mp4", nome: "MUTV", link: "https://wa.me/5512988461978" },
+            { src: "aluguecopos (1).mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
+            { src: "Gestão (1).mp4", nome: "Destaque", link: "https://destaque.com.br/" },
+            { src: "carro.mp4", nome: "Carro", link: "https://wa.me/5512988461978" }
         ];
         
         let currentVideoIndex = 0;
+        let videoInterval = null;
         
-        function alternarVideo() {
+        function alternarVideoAutomatico() {
             currentVideoIndex = (currentVideoIndex + 1) % videosList.length;
             const video = videosList[currentVideoIndex];
             const videoElement = document.getElementById('mainVideo');
-            const videoIndicator = document.getElementById('currentVideoName');
+            const ctaButton = document.getElementById('ctaButton');
             
             if (videoElement && video) {
                 videoElement.pause();
                 videoElement.src = video.src;
                 videoElement.load();
                 videoElement.play().catch(e => console.log('Erro ao tocar vídeo:', e));
-                if (videoIndicator) videoIndicator.textContent = video.nome;
-                showNotification(`🎬 Vídeo: ${video.nome}`);
+                
+                // Atualiza o link do botão CTA
+                if (ctaButton && video.link) {
+                    ctaButton.onclick = () => {
+                        window.open(video.link, '_blank');
+                    };
+                }
+                
+                showNotification(`🎬 Vídeo: ${video.nome}`, 2000);
             }
+        }
+        
+        function iniciarAlternanciaVideos() {
+            if (videoInterval) clearInterval(videoInterval);
+            videoInterval = setInterval(alternarVideoAutomatico, 20000); // 20 segundos
         }
         
         // Playlist
@@ -510,8 +539,8 @@
             { id: 3, title: "Amiga Da Minha Mulher", artist: "Seu Jorge", src: "Amiga_Da_Minha_Mulher_Seu_Jorge_muzzik.m4a", periodo: "todos" },
             { id: 4, title: "Vai Passar", artist: "Ferrugem", src: "Ferrugem_Paci_ncia_Part_Alcione_muzzik.m4a", periodo: "tarde" },
             { id: 5, title: "Perfume", artist: "Desejo", src: "PERFUME_Desejo_de_Menina_muzzik.m4a", periodo: "noite" },
-            { id: 6, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
-            { id: 7, title: "Quem_dera_eu_Seu_Zé", artist: "Ana_Carolina", src: "Ana_Carolina_Quem_dera_eu_Seu_Z__muzzik.m4a", periodo: "noite" },
+            { id: 6, title: "Someone Like ", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
+            { id: 7, title: "", artist: "", src: "", periodo: "noite" },
             { id: 8, title: "Hotel California", artist: "Eagles", src: "Eagles_Hotel_California_12.m4a", periodo: "todos" }
         ];
         
@@ -797,12 +826,6 @@
         document.getElementById('shareDrawerBtn').addEventListener('click', () => { if(navigator.share) navigator.share({title:'Rádio Playlist'}); else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); } });
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
         
-        // Botão de alternar vídeos
-        document.getElementById('toggleVideosBtn').addEventListener('click', () => {
-            alternarVideo();
-            closeDrawer();
-        });
-        
         // Inicialização
         window.addEventListener('load', () => {
             updateFilteredPlaylist();
@@ -811,6 +834,16 @@
             if(currentIndex === -1) currentIndex = 0;
             loadTrack(currentIndex);
             startAdTimer();
+            iniciarAlternanciaVideos();
+            
+            // Configurar CTA inicial
+            const ctaButton = document.getElementById('ctaButton');
+            if (ctaButton && videosList[0].link) {
+                ctaButton.onclick = () => {
+                    window.open(videosList[0].link, '_blank');
+                };
+            }
+            
             tapToStart.style.display = 'block';
             tapToStart.addEventListener('click', async (e) => {
                 e.stopPropagation();
@@ -818,7 +851,7 @@
                 tapToStart.style.display = 'none';
             });
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
-            console.log('✅ Sistema inicializado');
+            console.log('✅ Sistema inicializado - Vídeos alternam a cada 20 segundos');
         });
     </script>
 </body>
