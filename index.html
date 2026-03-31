@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MUTV Playlist • Toca com tela bloqueada</title>
+    <title>MUTV Playlist • Toca em Segundo Plano</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -237,7 +237,7 @@
                 }
                 if (audioCtx.state === 'suspended') await audioCtx.resume();
                 
-                // Create silent buffer (4 seconds loop) to keep context alive
+                // Cria um buffer de silêncio de 4 segundos em loop para manter o contexto vivo
                 const sampleRate = audioCtx.sampleRate;
                 const bufferLen = sampleRate * 4;
                 const silentBuffer = audioCtx.createBuffer(1, bufferLen, sampleRate);
@@ -253,7 +253,7 @@
                 silentSourceNode.connect(audioCtx.destination);
                 silentSourceNode.start();
                 
-                // Connect musicPlayer (clean previous if exists)
+                // Conecta o musicPlayer ao AudioContext
                 if (musicSourceNode) {
                     try { musicSourceNode.disconnect(); } catch(e) {}
                     musicSourceNode = null;
@@ -264,7 +264,7 @@
                 musicSourceNode.connect(musicGain);
                 musicGain.connect(audioCtx.destination);
                 
-                // Connect adPlayer
+                // Conecta o adPlayer ao AudioContext
                 if (adSourceNode) {
                     try { adSourceNode.disconnect(); } catch(e) {}
                 }
@@ -277,7 +277,7 @@
                 audioActive = true;
                 document.getElementById('audioStatusBadge').innerHTML = '<i class="fas fa-check-circle"></i> ✅ Áudio ativado! Toca em segundo plano';
                 document.getElementById('audioStatusBadge').style.background = 'rgba(76, 175, 80, 0.8)';
-                console.log('✅ AudioContext ativo + media elements roteados');
+                console.log('✅ AudioContext ativo e players conectados');
                 return true;
             } catch (err) {
                 console.error('Erro AudioContext:', err);
@@ -297,6 +297,19 @@
                     await musicPlayer.play().catch(e => console.log);
                 }
             }, 4000);
+        }
+        
+        function setupVisibilityHandler() {
+            document.addEventListener('visibilitychange', async () => {
+                if (!document.hidden && isPlaying && !isAdPlaying) {
+                    setTimeout(() => {
+                        if (musicPlayer.paused && isPlaying) {
+                            musicPlayer.play().catch(e => console.log('Retomada automática:', e));
+                        }
+                    }, 100);
+                }
+                if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
+            });
         }
         
         // ==================== MUSIC LOGIC ====================
@@ -417,6 +430,7 @@
             const ok = await initAudioContext();
             if(ok) {
                 startKeepAliveService();
+                setupVisibilityHandler();
                 updateFilteredPlaylist();
                 const randomTrack = filteredPlaylist[Math.floor(Math.random()*filteredPlaylist.length)];
                 const globalIdx = musicas.findIndex(m => m.id === randomTrack.id);
