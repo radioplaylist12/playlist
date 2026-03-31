@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Midia Playlist • Offline Ready</title>
+    <title>MUTV Playlist • Offline Ready</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -21,7 +21,6 @@
         body.theme-pure-black { --primary-color: #000000; --primary-dark: #000000; }
         body { --primary-color: #e63946; --primary-dark: #b71c1c; --text-primary: #ffffff; --text-secondary: #cccccc; --border-color: #333333; }
         
-        /* Container principal */
         .app { 
             width: 100%; 
             height: 100vh; 
@@ -30,7 +29,6 @@
             overflow: hidden;
         }
         
-        /* Vídeo principal ocupando toda a tela - SEM TARJA PRETA */
         .fullscreen-video-container {
             position: absolute;
             top: 0;
@@ -50,7 +48,6 @@
             left: 0;
         }
         
-        /* Camada de overlay para controles - SEM FUNDO ESCURO */
         .controls-overlay {
             position: absolute;
             top: 0;
@@ -64,7 +61,7 @@
             pointer-events: none;
         }
         
-        /* Ticker no topo - MAIS TRANSPARENTE */
+        /* Ticker no topo - SEM FUNDO ESCURO */
         .top-ticker {
             position: absolute;
             top: 0;
@@ -130,7 +127,7 @@
         
         .top-btn:active { transform: scale(0.9); background: var(--primary-color); }
         
-        /* Botão flutuante "PEÇA AGORA!" */
+        /* Botão flutuante PEÇA AGORA! */
         .cta-button {
             position: absolute;
             bottom: 25%;
@@ -164,7 +161,7 @@
         
         .cta-button:active { transform: scale(0.95); }
         
-        /* Card do player - mais fino e transparente */
+        /* Card do player */
         .player-card {
             position: absolute;
             bottom: 8%;
@@ -210,7 +207,6 @@
         .control-btn:active { transform: scale(0.9); color: var(--primary-color) !important; }
         .play-btn { font-size: 1.3rem; width: 42px; height: 42px; }
         
-        /* Footer */
         .footer {
             position: absolute;
             bottom: 5px;
@@ -224,7 +220,7 @@
             pointer-events: none;
         }
         
-        /* Drawer (menu lateral) */
+        /* Drawer */
         .drawer {
             position: fixed;
             top: 0;
@@ -351,8 +347,13 @@
         }
         @keyframes btnPulse { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.02); } 100% { transform: translateX(-50%) scale(1); } }
         
-        /* Esconder indicador de vídeo */
+        /* Ocultar indicador de vídeo */
         .video-indicator {
+            display: none;
+        }
+        
+        /* Ocultar mensagem "aguarde anúncio terminar" */
+        .ad-wait-message {
             display: none;
         }
     </style>
@@ -364,19 +365,16 @@
     <div class="audio-status-badge" id="audioStatusBadge"><i class="fas fa-microphone-alt"></i> Áudio: Aguardando...</div>
     
     <div class="app">
-        <!-- Vídeo Fullscreen -->
         <div class="fullscreen-video-container" id="fullscreenVideoContainer">
             <video id="mainVideo" autoplay loop muted playsinline>
                 <source src="pizza.mp4" type="video/mp4">
             </video>
         </div>
         
-        <!-- Botão flutuante PEÇA AGORA! -->
         <button class="cta-button" id="ctaButton">
             <i class="fas fa-shopping-cart"></i> PEÇA AGORA!
         </button>
         
-        <!-- Ticker no topo -->
         <div class="top-ticker">
             <div class="ticker-container-top">
                 <div class="ticker-text-top" id="topTickerText">
@@ -385,15 +383,12 @@
             </div>
         </div>
         
-        <!-- Overlay de controles -->
         <div class="controls-overlay">
-            <!-- Botões superiores -->
             <div class="top-bar">
                 <button class="top-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
                 <button class="top-btn" id="videoMenuBtn"><i class="fas fa-ellipsis-h"></i></button>
             </div>
             
-            <!-- Player card mais fino e mais pra baixo -->
             <div class="player-card">
                 <div class="track-info"><p id="trackArtist">🎵 Clique em "TOCAR MÚSICA"</p></div>
                 <div class="progress-area">
@@ -412,12 +407,10 @@
         </div>
     </div>
     
-    <!-- Elementos ocultos para áudio -->
     <audio id="musicPlayer" preload="auto"></audio>
     <audio id="adPlayer" preload="auto"></audio>
     <audio id="silentAudio" loop crossorigin="anonymous" style="display: none;"></audio>
     
-    <!-- Drawer Menu -->
     <div class="drawer" id="drawer">
         <div class="drawer-header"><button class="close-drawer" id="closeDrawer"><i class="fas fa-times"></i></button></div>
         <div class="drawer-content">
@@ -472,7 +465,6 @@
     </div>
     
     <script>
-        // Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', async () => {
                 try {
@@ -482,7 +474,6 @@
             });
         }
         
-        // Web Audio API
         let audioContext = null, audioContextInitiated = false;
         async function initAudioContext() {
             if (audioContextInitiated) return true;
@@ -504,13 +495,12 @@
             } catch (error) { return false; }
         }
         
-        // Lista de vídeos para alternar automaticamente a cada 20 segundos
         const videosList = [
             { src: "pizza.mp4", nome: "Vídeo Principal", link: "https://wa.me/5512988461978" },
-            { src: "pizza.mp4", nome: "MUTV", link: "https://wa.me/5512988461978" },
+            { src: "lançamento.mp4", nome: "MUTV", link: "https://wa.me/5512988461978" },
             { src: "copos.mp4", nome: "AlugueCopos", link: "https://www.aluguecopos.com.br/" },
-            { src: "lançamento.mp4", nome: "Destaque", link: "https://destaque.com.br/" },
-            { src: "carro.mp4", nome: "Carro", link: "https://wa.me/5512988461978" }
+            { src: "pizza.mp4", nome: "Destaque", link: "https://destaque.com.br/" },
+           
         ];
         
         let currentVideoIndex = 0;
@@ -528,14 +518,11 @@
                 videoElement.load();
                 videoElement.play().catch(e => console.log('Erro ao tocar vídeo:', e));
                 
-                // Atualiza o link do botão CTA
                 if (ctaButton && video.link) {
                     ctaButton.onclick = () => {
                         window.open(video.link, '_blank');
                     };
                 }
-                
-                console.log(`🎬 Vídeo: ${video.nome}`);
             }
         }
         
@@ -544,7 +531,6 @@
             videoInterval = setInterval(alternarVideoAutomatico, 20000);
         }
         
-        // Playlist
         const musicas = [
             { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Remember The Time", artist: "A_cha", src: "A_cha_Remember_The_Time_KorgStyle_Life_muzzik.m4a", periodo: "noite" },
@@ -556,14 +542,12 @@
             { id: 8, title: "Hotel California", artist: "Eagles", src: "Eagles_Hotel_California_12.m4a", periodo: "todos" }
         ];
         
-        // Anúncios de áudio - com áudio real
         const anunciosAudio = [
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", nome: "Oferta Especial - Aproveite!" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", nome: "Promoção Relâmpago - Hoje!" },
-            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", nome: "Novidade Imperdível - Corra!" }
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", nome: "Oferta Especial" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", nome: "Promoção Relâmpago" },
+            { src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", nome: "Novidade Imperdível" }
         ];
         
-        // Elementos DOM
         const musicPlayer = document.getElementById('musicPlayer');
         const adPlayer = document.getElementById('adPlayer');
         const playBtn = document.getElementById('playPauseBtn');
@@ -594,7 +578,7 @@
         
         async function playMusicWithAudioContext() {
             await initAudioContext();
-            if(isAdPlaying) { showNotification('Aguarde o anúncio terminar'); return; }
+            if(isAdPlaying) return;
             const track = musicas[currentIndex];
             musicPlayer.src = track.src;
             musicPlayer.load();
@@ -759,18 +743,15 @@
             
             adPlayer.play().then(() => {
                 console.log('✅ Anúncio tocando:', ad.nome);
-                showNotification(`📢 ${ad.nome}`, 3000);
             }).catch(e => {
                 console.log('❌ Erro no anúncio:', e);
                 finishAudioAd();
             });
             
             adPlayer.onended = () => {
-                console.log('✅ Anúncio finalizado');
                 finishAudioAd();
             };
             adPlayer.onerror = () => {
-                console.log('❌ Erro no anúncio');
                 finishAudioAd();
             };
         }
@@ -792,7 +773,6 @@
             if(adTimerInterval) clearInterval(adTimerInterval);
             adTimerInterval = setInterval(() => {
                 if(adsEnabled && !isAdPlaying && isPlaying) {
-                    console.log('⏰ Iniciando anúncio automático');
                     playAudioAd();
                 }
             }, adInterval * 60 * 1000);
@@ -801,6 +781,7 @@
         function toggleAds() { 
             adsEnabled = !adsEnabled; 
             document.getElementById('toggleAdsBtn').innerHTML = adsEnabled ? 'Ativo' : 'Inativo';
+            document.getElementById('toggleAdsBtn').style.background = adsEnabled ? '' : '#333';
             showNotification(adsEnabled ? '📢 Anúncios ativados' : '🔇 Anúncios desativados');
         }
         
@@ -808,7 +789,7 @@
             if(isPlaying) {
                 playAudioAd(); 
             } else {
-                showNotification('⚠️ Toque uma música primeiro para testar anúncio');
+                showNotification('⚠️ Toque uma música primeiro');
             }
         }
         
@@ -832,7 +813,6 @@
         setTheme(savedTheme);
         document.querySelectorAll('.color-option').forEach(opt => opt.addEventListener('click', () => setTheme(opt.dataset.theme)));
         
-        // Feedback
         let currentRating = 0;
         document.querySelectorAll('.star').forEach(star => {
             star.addEventListener('click', () => {
@@ -862,7 +842,6 @@
             document.querySelectorAll('.star').forEach(s => { s.classList.remove('fas','active'); s.classList.add('far'); });
         });
         
-        // Eventos
         document.getElementById('progressBar').addEventListener('click', (e) => {
             if(isAdPlaying) return;
             const rect = e.currentTarget.getBoundingClientRect();
@@ -882,7 +861,6 @@
         document.getElementById('shareDrawerBtn').addEventListener('click', () => { if(navigator.share) navigator.share({title:'Rádio Playlist'}); else { navigator.clipboard.writeText(location.href); showNotification('Link copiado!'); } });
         toggleAllSongsBtn.addEventListener('click', toggleAllSongsMode);
         
-        // Inicialização
         window.addEventListener('load', () => {
             updateFilteredPlaylist();
             const randomIndex = Math.floor(Math.random() * filteredPlaylist.length);
@@ -892,7 +870,6 @@
             startAdTimer();
             iniciarAlternanciaVideos();
             
-            // Configurar CTA inicial
             const ctaButton = document.getElementById('ctaButton');
             if (ctaButton && videosList[0].link) {
                 ctaButton.onclick = () => {
@@ -907,7 +884,7 @@
                 tapToStart.style.display = 'none';
             });
             setInterval(() => { if(!allSongsMode) updateFilteredPlaylist(); }, 60000);
-            console.log('✅ Sistema inicializado - Anúncios a cada 30 segundos para teste');
+            console.log('✅ Sistema inicializado');
         });
     </script>
 </body>
