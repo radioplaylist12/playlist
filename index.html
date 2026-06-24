@@ -7,6 +7,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* (mesmo CSS do seu código original – mantive igual) */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         body { min-height: 100vh; background-color: #000000; overflow: hidden; position: fixed; width: 100%; height: 100%; }
         body.theme-red { --primary-color: #e63946; --primary-dark: #b71c1c; }
@@ -210,7 +211,7 @@
     </style>
 </head>
 <body class="theme-red">
-    <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>MUTV Playlist</h1><p>Carregando playlist...</p></div></div>
+    <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>MUTV Playlist</h1><p id="splashStatus">Carregando playlist...</p></div></div>
     <div id="tap-to-start"><i class="fas fa-play-circle"></i> 🎵 ATIVAR ÁUDIO (Toca com tela bloqueada)</div>
     
     <div class="app">
@@ -227,7 +228,7 @@
         
         <div class="controls-overlay">
             <div class="bottom-controls" id="bottomControls">
-                <div class="track-info"><p id="trackArtist">🎵 Clique em "ATIVAR ÁUDIO"</p></div>
+                <div class="track-info"><p id="trackArtist">🎵 Carregando...</p></div>
                 <div class="progress-area">
                     <div class="progress-time"><span id="currentTime">0:00</span><span id="totalTime">0:00</span></div>
                     <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
@@ -249,6 +250,7 @@
         <button id="fullscreenMenuBtn"><i class="fas fa-expand"></i> Tela cheia</button>
         <button id="shareMenuBtn"><i class="fas fa-share-alt"></i> Compartilhar</button>
         <button id="feedbackMenuBtn"><i class="fab fa-whatsapp"></i> Feedback</button>
+        <button id="reloadPlaylistBtn"><i class="fas fa-sync"></i> Recarregar playlist</button>
     </div>
     
     <audio id="musicPlayer" preload="auto" crossorigin="anonymous"></audio>
@@ -273,13 +275,13 @@
     
     <script>
         // ======================================================================
-        //  1. PLAYLIST - carregada via JSON externo
+        //  1. PLAYLIST - carregada via JSON com fallback imediato
         // ======================================================================
-        let musicas = [];                    // será preenchida pelo fetch
+        let musicas = [];
         let filteredPlaylist = [];
         let playlistLoaded = false;
 
-        // Fallback (caso o JSON falhe) – você pode manter sua lista antiga aqui
+        // Playlist de fallback (a mesma que você tinha)
         const fallbackMusicas = [
             { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
             { id: 2, title: "Remember The Time", artist: "A_cha", src: "A_cha_Remember_The_Time_KorgStyle_Life_muzzik.m4a", periodo: "noite" },
@@ -304,7 +306,7 @@
         ];
 
         // ======================================================================
-        //  2. ANÚNCIOS E VÍDEOS (fixos)
+        //  2. ANÚNCIOS E VÍDEOS
         // ======================================================================
         const anunciosAudio = [
             { src: "zzcv.mp3", nome: "Oferta Especial" },
@@ -317,7 +319,7 @@
         ];
 
         // ======================================================================
-        //  3. DOM E VARIÁVEIS GLOBAIS
+        //  3. DOM E VARIÁVEIS
         // ======================================================================
         const musicPlayer = document.getElementById('musicPlayer');
         const adPlayer = document.getElementById('adPlayer');
@@ -330,6 +332,7 @@
         const totalTimeEl = document.getElementById('totalTime');
         const trackArtist = document.getElementById('trackArtist');
         const splash = document.getElementById('splash');
+        const splashStatus = document.getElementById('splashStatus');
         const tapToStart = document.getElementById('tap-to-start');
         const menuButton = document.getElementById('menuButton');
         const menuPopup = document.getElementById('menuPopup');
@@ -342,52 +345,64 @@
         let timerInterval = null;
         let isAdPlaying = false;
         let adsEnabled = true;
-        let adInterval = 30; // segundos entre anúncios (30 min)
+        let adInterval = 30;
         let currentAdIndex = 0;
         let shouldResumeMusic = false;
         let musicPausedTime = 0;
         let notificationTimeout = null;
 
         // ======================================================================
-        //  4. CARREGAR PLAYLIST DO JSON
+        //  4. FUNÇÃO PARA CARREGAR PLAYLIST (com timeout)
         // ======================================================================
         async function carregarPlaylist() {
+            splashStatus.textContent = 'Carregando playlist...';
             try {
-                const resposta = await fetch('https://raw.githubusercontent.com/radioplaylist12/playlist/refs/heads/main/yu.json');
+                // Tenta buscar com timeout de 5 segundos
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 5000);
+                const resposta = await fetch('https://raw.githubusercontent.com/radioplaylist12/playlist/refs/heads/main/yu.json', {
+                    signal: controller.signal
+                });
+                clearTimeout(timeout);
                 if (!resposta.ok) throw new Error('HTTP ' + resposta.status);
                 const dados = await resposta.json();
                 if (Array.isArray(dados) && dados.length) {
                     musicas = dados;
-                    console.log('✅ Playlist carregada:', musicas.length, 'músicas');
+                    console.log('✅ Playlist carregada do JSON:', musicas.length);
                 } else {
-                    throw new Error('Formato inválido');
+                    throw new Error('JSON vazio ou inválido');
                 }
             } catch (erro) {
-                console.warn('⚠️ Falha ao carregar playlist, usando fallback:', erro);
+                console.warn('⚠️ Falha ao carregar JSON, usando fallback:', erro);
                 musicas = fallbackMusicas;
+                showNotification('⚠️ Usando playlist local (fallback)', 4000);
             }
             filteredPlaylist = [...musicas];
             playlistLoaded = true;
-            // Após carregar, inicializa o player
             iniciarPlayer();
         }
 
         function iniciarPlayer() {
             if (!playlistLoaded || musicas.length === 0) {
-                setTimeout(iniciarPlayer, 200);
+                // Tenta novamente em 1s
+                setTimeout(iniciarPlayer, 1000);
                 return;
             }
-            // Escolhe uma música aleatória
+            // Escolhe aleatória
             const rand = filteredPlaylist[Math.floor(Math.random() * filteredPlaylist.length)];
             currentIndex = musicas.findIndex(m => m.id === rand.id);
             if (currentIndex === -1) currentIndex = 0;
             loadTrackUI(currentIndex);
-            // Mostra o botão de ativação
+            // Mostra botão
             tapToStart.style.display = 'block';
-            // Inicia o timer de anúncios
+            splashStatus.textContent = 'Clique no botão para ativar áudio';
+            // Inicia timer de anúncios
             startAdTimer();
-            // Atualiza o splash
-            splash.querySelector('p').textContent = 'Clique no botão para ativar áudio';
+            // Oculta splash após 1s (para mostrar o botão)
+            setTimeout(() => {
+                splash.classList.add('hidden');
+                setTimeout(() => splash.style.display = 'none', 500);
+            }, 1000);
         }
 
         // ======================================================================
@@ -458,7 +473,7 @@
                 adGain.connect(audioCtx.destination);
 
                 audioActive = true;
-                console.log('✅ AudioContext ativo - Background playback OK');
+                console.log('✅ AudioContext ativo');
                 return true;
             } catch (err) {
                 console.error('Erro AudioContext:', err);
@@ -474,7 +489,7 @@
                     try { silentSourceNode.start(); } catch(e) {}
                 }
                 if (isPlaying && !isAdPlaying && musicPlayer.paused && audioActive) {
-                    console.log('🔄 KeepAlive: retomando música pausada');
+                    console.log('🔄 KeepAlive: retomando');
                     await musicPlayer.play().catch(e => console.log);
                 }
             }, 4000);
@@ -582,7 +597,6 @@
             musicPlayer.src = track.src;
             musicPlayer.load();
 
-            // Remove listeners anteriores
             musicPlayer.oncanplaythrough = null;
             musicPlayer.onended = null;
             musicPlayer.onerror = null;
@@ -607,7 +621,6 @@
                         setTimeout(() => splash.style.display = 'none', 500);
                         tapToStart.style.display = 'none';
 
-                        // Media Session
                         if ('mediaSession' in navigator) {
                             navigator.mediaSession.metadata = new MediaMetadata({
                                 title: track.title,
@@ -780,6 +793,12 @@
             document.getElementById('feedbackModal').classList.toggle('open');
             closeMenu();
         });
+        // Botão recarregar playlist
+        document.getElementById('reloadPlaylistBtn').addEventListener('click', () => {
+            closeMenu();
+            showNotification('🔄 Recarregando playlist...', 2000);
+            carregarPlaylist();
+        });
 
         // ======================================================================
         //  10. EVENT LISTENERS
@@ -851,7 +870,7 @@
         });
 
         // ======================================================================
-        //  11. VÍDEOS (rotação)
+        //  11. VÍDEOS
         // ======================================================================
         let currentVideoIndex = 0;
         setInterval(() => {
@@ -869,7 +888,7 @@
         document.getElementById('ctaButton').onclick = () => window.open(videosList[0].link, '_blank');
 
         // ======================================================================
-        //  12. AUTO-HIDE DA BARRA INFERIOR
+        //  12. AUTO-HIDE
         // ======================================================================
         const bottomControls = document.getElementById('bottomControls');
         let hideTimeout;
@@ -891,7 +910,7 @@
         showControls();
 
         // ======================================================================
-        //  13. ATIVAÇÃO DO ÁUDIO (botão "ATIVAR ÁUDIO")
+        //  13. ATIVAÇÃO DO ÁUDIO
         // ======================================================================
         tapToStart.addEventListener('click', async (e) => {
             e.stopPropagation();
@@ -904,17 +923,15 @@
                 startKeepAliveService();
                 setupVisibilityHandler();
                 setupSilentAudioWorkaround();
-                // Garante que a música atual seja carregada
                 if (currentIndex >= musicas.length) currentIndex = 0;
                 loadTrackUI(currentIndex);
                 await playMusic();
                 tapToStart.style.display = 'none';
-                // Tenta tela cheia
                 try {
                     if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
                     else if (document.documentElement.webkitRequestFullscreen) await document.documentElement.webkitRequestFullscreen();
                     else if (document.documentElement.msRequestFullscreen) await document.documentElement.msRequestFullscreen();
-                } catch (err) { console.log('Fullscreen não suportado:', err); }
+                } catch (err) { console.log('Fullscreen:', err); }
             } else {
                 showNotification('❌ Erro ao ativar áudio. Tente novamente.', 3000);
             }
@@ -926,7 +943,7 @@
         window.addEventListener('load', () => {
             const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
             document.body.className = savedTheme;
-            // Inicia o carregamento da playlist
+            // Inicia carregamento
             carregarPlaylist();
         });
     </script>
