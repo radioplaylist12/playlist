@@ -7,7 +7,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (mesmo CSS do seu código original – mantive igual) */
+        /* (mesmo CSS do seu código – mantido igual) */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         body { min-height: 100vh; background-color: #000000; overflow: hidden; position: fixed; width: 100%; height: 100%; }
         body.theme-red { --primary-color: #e63946; --primary-dark: #b71c1c; }
@@ -208,10 +208,18 @@
             50% { transform: translateX(-50%) scale(1.05); }
             100% { transform: translateX(-50%) scale(1); }
         }
+        .error-message { color: #ff6b6b; font-size: 0.9rem; margin-top: 10px; }
     </style>
 </head>
 <body class="theme-red">
-    <div id="splash"><div class="splash-content"><i class="fas fa-headphones-alt"></i><h1>MUTV Playlist</h1><p id="splashStatus">Carregando playlist...</p></div></div>
+    <div id="splash">
+        <div class="splash-content">
+            <i class="fas fa-headphones-alt"></i>
+            <h1>MUTV Playlist</h1>
+            <p id="splashStatus">Carregando playlist do servidor...</p>
+            <div id="splashError" class="error-message" style="display:none;"></div>
+        </div>
+    </div>
     <div id="tap-to-start"><i class="fas fa-play-circle"></i> 🎵 ATIVAR ÁUDIO (Toca com tela bloqueada)</div>
     
     <div class="app">
@@ -275,38 +283,14 @@
     
     <script>
         // ======================================================================
-        //  1. PLAYLIST - carregada via JSON com fallback imediato
+        //  1. PLAYLIST – carregada exclusivamente do JSON (sem fallback)
         // ======================================================================
         let musicas = [];
         let filteredPlaylist = [];
         let playlistLoaded = false;
 
-        // Playlist de fallback (a mesma que você tinha)
-        const fallbackMusicas = [
-            { id: 1, title: "Flavio Venturini Feat Jota Quest", artist: "Flavio Venturini & Jota Quest", src: "9Flavio_Venturini_Flavio_Venturini_Feat_Jota_muzzik.m4a", periodo: "manha" },
-            { id: 2, title: "Remember The Time", artist: "A_cha", src: "A_cha_Remember_The_Time_KorgStyle_Life_muzzik.m4a", periodo: "noite" },
-            { id: 3, title: "Amiga Da Minha Mulher", artist: "Seu Jorge", src: "Amiga_Da_Minha_Mulher_Seu_Jorge_muzzik.m4a", periodo: "todos" },
-            { id: 4, title: "Vai Passar", artist: "Ferrugem", src: "Ferrugem_Paci_ncia_Part_Alcione_muzzik.m4a", periodo: "tarde" },
-            { id: 5, title: "Someone Like You", artist: "Adele", src: "Adele_Someone_Like_You_muzzik.m4a", periodo: "todos" },
-            { id: 6, title: "Forever Young", artist: "Alphaville", src: "Alphaville_Forever_Young_muzzik.m4a", periodo: "noite" },
-            { id: 7, title: "Hotel California", artist: "Eagles", src: "Eagles_Hotel_California_12.m4a", periodo: "todos" },
-            { id: 8, title: "What's Up", artist: "Non_Blondes", src: "WHAT_S_UP_Non_Blondes_Subt_tulos_ingl_s_y_espa_ol_muzzik.m4a", periodo: "todos" },
-            { id: 9, title: "JanaIna", artist: "Biquini_Cavad_o", src: "Biquini_Cavad_o_Jana_na_muzzik.m4a", periodo: "todos" },
-            { id: 10, title: "DON_WEST_Send_It_Back_muzzik.m4a", artist: "DON_WEST", src: "DON_WEST_Send_It_Back_muzzik.m4a", periodo: "todos" },
-            { id: 11, title: "Equalize", artist: "Pitty", src: "Pitty_Equalize_muzzik.m4a", periodo: "todos" },
-            { id: 12, title: "Michael_Jackson", artist: "Michael_Jackson", src: "Michael_Jackson_Billie_Jean_muzzik.m4a", periodo: "todos" },
-            { id: 13, title: "PERFUME", artist: "Desejo_de_Menina", src: "PERFUME_Desejo_de_Menina_muzzik.m4a", periodo: "todos" },
-            { id: 14, title: "Flowers", artist: "Miley_Cyrus", src: "Miley_Cyrus_Flowers_muzzik.m4a", periodo: "todos" },
-            { id: 15, title: "KIiko no Pagode.", artist: "KIiko no Pagode.m4a", src: "KIiko no Pagode.m4a", periodo: "todos" },
-            { id: 16, title: "Ainda_Bem_Que_Chegou_", artist: "Vitor_Kley_Ainda_Bem_Que_Chegou_muzzik.m4a", src: "Vitor_Kley_Ainda_Bem_Que_Chegou_muzzik.m4a", periodo: "todos" },
-            { id: 17, title: "Quem_dera_eu_Seu_Z__", artist: "Ana_Carolina_", src: "Ana_Carolina_Quem_dera_eu_Seu_Z__muzzik.m4a", periodo: "todos" },
-            { id: 18, title: "Engenheiros_Do_HawaiiSomos_Quem_Podemos_Ser_", artist: "Engenheiros_Do_Hawaii_", src: "Engenheiros_Do_Hawaii_Somos_Quem_Podemos_Ser_muzzik.m4a", periodo: "todos" },
-            { id: 19, title: "Corpo_Nu", artist: "Panda", src: "Panda_Corpo_Nu_muzzik.m4a", periodo: "todos" },
-            { id: 20, title: "Mordida_de_Amor", artist: "SPC", src: "Mordida_de_Amor_Dvd_Produto_Nacional_Vol_SPC_muzzik.m4a", periodo: "todos" }
-        ];
-
         // ======================================================================
-        //  2. ANÚNCIOS E VÍDEOS
+        //  2. ANÚNCIOS E VÍDEOS (fixos)
         // ======================================================================
         const anunciosAudio = [
             { src: "zzcv.mp3", nome: "Oferta Especial" },
@@ -333,6 +317,7 @@
         const trackArtist = document.getElementById('trackArtist');
         const splash = document.getElementById('splash');
         const splashStatus = document.getElementById('splashStatus');
+        const splashError = document.getElementById('splashError');
         const tapToStart = document.getElementById('tap-to-start');
         const menuButton = document.getElementById('menuButton');
         const menuPopup = document.getElementById('menuPopup');
@@ -352,30 +337,32 @@
         let notificationTimeout = null;
 
         // ======================================================================
-        //  4. FUNÇÃO PARA CARREGAR PLAYLIST (com timeout)
+        //  4. FUNÇÃO PARA CARREGAR PLAYLIST (SOMENTE JSON)
         // ======================================================================
         async function carregarPlaylist() {
-            splashStatus.textContent = 'Carregando playlist...';
+            splashStatus.textContent = 'Carregando playlist do servidor...';
+            splashError.style.display = 'none';
             try {
-                // Tenta buscar com timeout de 5 segundos
                 const controller = new AbortController();
                 const timeout = setTimeout(() => controller.abort(), 5000);
                 const resposta = await fetch('https://raw.githubusercontent.com/radioplaylist12/playlist/refs/heads/main/yu.json', {
                     signal: controller.signal
                 });
                 clearTimeout(timeout);
-                if (!resposta.ok) throw new Error('HTTP ' + resposta.status);
+                if (!resposta.ok) throw new Error('Erro HTTP: ' + resposta.status);
                 const dados = await resposta.json();
-                if (Array.isArray(dados) && dados.length) {
-                    musicas = dados;
-                    console.log('✅ Playlist carregada do JSON:', musicas.length);
-                } else {
+                if (!Array.isArray(dados) || dados.length === 0) {
                     throw new Error('JSON vazio ou inválido');
                 }
+                musicas = dados;
+                console.log('✅ Playlist carregada do JSON:', musicas.length);
             } catch (erro) {
-                console.warn('⚠️ Falha ao carregar JSON, usando fallback:', erro);
-                musicas = fallbackMusicas;
-                showNotification('⚠️ Usando playlist local (fallback)', 4000);
+                console.error('❌ Falha ao carregar JSON:', erro);
+                splashStatus.textContent = '⚠️ Erro ao carregar playlist';
+                splashError.textContent = 'Não foi possível obter a lista de músicas. Verifique sua conexão ou recarregue.';
+                splashError.style.display = 'block';
+                // Não inicia o player, pois não há fallback
+                return;
             }
             filteredPlaylist = [...musicas];
             playlistLoaded = true;
@@ -384,8 +371,8 @@
 
         function iniciarPlayer() {
             if (!playlistLoaded || musicas.length === 0) {
-                // Tenta novamente em 1s
-                setTimeout(iniciarPlayer, 1000);
+                // Tenta novamente em 2s (caso tenha sido carregado com sucesso mas ainda não processado)
+                setTimeout(iniciarPlayer, 2000);
                 return;
             }
             // Escolhe aleatória
@@ -393,12 +380,12 @@
             currentIndex = musicas.findIndex(m => m.id === rand.id);
             if (currentIndex === -1) currentIndex = 0;
             loadTrackUI(currentIndex);
-            // Mostra botão
+            // Mostra botão de ativação
             tapToStart.style.display = 'block';
-            splashStatus.textContent = 'Clique no botão para ativar áudio';
+            splashStatus.textContent = 'Playlist carregada! Clique no botão para ativar áudio';
             // Inicia timer de anúncios
             startAdTimer();
-            // Oculta splash após 1s (para mostrar o botão)
+            // Oculta splash após 1s
             setTimeout(() => {
                 splash.classList.add('hidden');
                 setTimeout(() => splash.style.display = 'none', 500);
@@ -793,10 +780,16 @@
             document.getElementById('feedbackModal').classList.toggle('open');
             closeMenu();
         });
-        // Botão recarregar playlist
         document.getElementById('reloadPlaylistBtn').addEventListener('click', () => {
             closeMenu();
             showNotification('🔄 Recarregando playlist...', 2000);
+            // Limpa estado atual
+            musicas = [];
+            filteredPlaylist = [];
+            playlistLoaded = false;
+            splash.style.display = 'flex';
+            splash.classList.remove('hidden');
+            splashError.style.display = 'none';
             carregarPlaylist();
         });
 
@@ -943,7 +936,6 @@
         window.addEventListener('load', () => {
             const savedTheme = localStorage.getItem('radioTheme') || 'theme-red';
             document.body.className = savedTheme;
-            // Inicia carregamento
             carregarPlaylist();
         });
     </script>
